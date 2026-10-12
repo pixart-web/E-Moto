@@ -1,0 +1,16 @@
+AVISO AUTOMÁTICO DE RENTING — 2 DIAS ANTES
+=================================================
+
+1. Envie o ficheiro cron/renting-reminders.php para a mesma pasta no servidor.
+
+2. No cPanel > Cron Jobs, crie uma execução diária. Sugestão: todos os dias às 09:00.
+
+   0 9 * * * /usr/local/bin/php /home/emotomotogreen/public_html/cron/renting-reminders.php
+
+3. Para testar no Terminal do cPanel:
+
+   /usr/local/bin/php /home/emotomotogreen/public_html/cron/renting-reminders.php --test
+
+O email é enviado para l.dalogli@motogreen.pt quando existir pelo menos um
+levantamento de renting marcado para daí a dois dias. A proteção contra duplicados
+usa a tabela scheduled_report_runs que já existe no E-Motogreen.

@@ -1,11 +1,13 @@
 {
   "application": "E-Motogreen",
-  "version": "2026.10.07.24",
-  "releasedAt": "2026-10-07T12:00:00+01:00",
+  "version": "2026.10.12.25",
+  "releasedAt": "2026-10-12T12:00:00+01:00",
   "features": [
     "oficina-ate-20h",
     "processos-entregues-no-historico",
     "test-drives",
+    "renting-agendamentos",
+    "renting-aviso-dois-dias",
     "acessorios-incluidos-no-total",
     "edicao-completa-agendamento-oficina",
     "bloqueio-dia-inteiro-oficina",
