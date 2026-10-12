@@ -1,0 +1,26 @@
+CORREÇÃO CRÍTICA — PROCESSO DO DANIEL
+
+Substituir no FTP, obrigatoriamente por esta ordem:
+
+1. api/state.php
+2. app.js
+3. index.html
+
+Depois faça Ctrl + F5, termine sessão e volte a entrar.
+
+Causa corrigida:
+
+O servidor guardava números de processos eliminados. Como MG-26070 foi
+reutilizado para o processo novo do Daniel, o servidor confundia o novo
+processo com um processo antigo apagado. Essa regra foi removida.
+
+Recuperação:
+
+- Se não existir um processo para Daniel Madeira, a aplicação utiliza o
+  cliente e a CFMoto 800MT-X já associada para recriar MG-26070.
+- A variante Low Seat e o estado atual do stock são associados ao processo.
+- Os valores comerciais, pagamento e responsável ficam a confirmar porque
+  esses dados já não existem na base de dados.
+- O processo recebe uma nota de recuperação e pode ser corrigido em Editar.
+
+Não é necessário executar SQL.

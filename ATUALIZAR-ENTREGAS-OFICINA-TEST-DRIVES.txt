@@ -1,0 +1,38 @@
+ATUALIZAÇÃO — ENTREGAS, OFICINA ATÉ ÀS 20H E TEST DRIVES
+
+Esta atualização preserva os processos, clientes, motos, marcações e restantes dados existentes.
+
+Substituir no servidor:
+
+1. app.js
+2. styles.css
+3. index.html
+4. api/state.php
+5. api/admin-users.php
+
+Não é necessário executar SQL para estas funcionalidades.
+
+Alterações incluídas:
+
+- Agenda da Oficina entre as 09:00 e as 20:00;
+- criação por clique no calendário recalculada para o novo horário;
+- processos entregues deixam de aparecer na lista de processos ativos;
+- o processo não é apagado da base de dados;
+- data da entrega fica registada como data de compra na moto do cliente;
+- o texto "null" deixa de aparecer nas motos sem ano;
+- contador semanal reconhece entregas concluídas através da checklist ou edição;
+- moto correspondente passa automaticamente ao estado Entregue;
+- novo painel Test Drives com calendário mensal;
+- Test Drives podem ser criados, editados e apagados;
+- modelos disponíveis: 450MT, 700ADV, 800MT-X, 1000MT-X e 800MT-ES;
+- Test Drives integrados nas permissões do Painel Admin;
+- sincronização multiutilizador dos Test Drives.
+
+Depois do upload:
+
+1. terminar sessão;
+2. fazer Ctrl+F5;
+3. voltar a entrar;
+4. confirmar uma entrega já realizada no contador e na ficha do cliente;
+5. confirmar a hora 20:00 na Agenda;
+6. criar uma marcação de Test Drive de teste.

@@ -1,0 +1,15 @@
+EDIÇÃO DA CHECKLIST
+
+Substituir no FTP:
+
+1. app.js
+2. index.html
+
+Depois faça Ctrl + F5.
+
+- Na ficha normal do processo, os passos validados continuam bloqueados.
+- Em "Editar processo", todos os piscos podem ser marcados ou desmarcados.
+- Ao guardar, o estado do processo é recalculado.
+- O nome do primeiro utilizador que validou cada passo é preservado.
+
+Não é necessário executar SQL.

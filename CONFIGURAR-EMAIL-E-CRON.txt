@@ -1,0 +1,53 @@
+E-MOTOGREEN — CONFIGURAR EMAIL E RELATÓRIO DIÁRIO
+==================================================
+
+1. BASE DE DADOS
+No phpMyAdmin, selecione a base emotomotogreen_crm e importe:
+database/update-daily-email-report.sql
+
+2. CONFIGURAÇÃO SMTP
+No Gestor de Ficheiros, edite private/config.php.
+Adicione o bloco seguinte dentro do array principal, antes do ]; final:
+
+    'smtp' => [
+        'host' => 'mail.motogreen.pt',
+        'port' => 465,
+        'encryption' => 'ssl',
+        'username' => 'marketing@motogreen.pt',
+        'password' => 'COLOCAR_AQUI_A_PASSWORD_DO_EMAIL',
+        'from_email' => 'marketing@motogreen.pt',
+        'from_name' => 'E-Motogreen',
+    ],
+
+Confirme que existe uma vírgula depois do bloco anterior.
+Não confundir esta password com a password do CRM ou do MySQL.
+
+3. TESTE MANUAL
+No cPanel > Terminal, execute (ajuste o utilizador e a pasta):
+
+/usr/local/bin/ea-php84 /home/UTILIZADOR_CPANEL/PASTA_DO_SUBDOMINIO/cron/daily-report.php --test
+
+O terminal deverá mostrar "Email de teste enviado". Confirme também o Spam.
+
+4. CRON JOB
+No cPanel > Cron Jobs, escolha "Uma vez por dia" e introduza:
+
+Minuto: 0
+Hora: 0
+Dia: *
+Mês: *
+Dia da semana: *
+
+Comando:
+/usr/local/bin/ea-php84 /home/UTILIZADOR_CPANEL/PASTA_DO_SUBDOMINIO/cron/daily-report.php >> /home/UTILIZADOR_CPANEL/e-motogreen-report.log 2>&1
+
+5. DESTINATÁRIOS
+- info@motogreen.pt
+- marketing@motogreen.pt
+- l.dalogli@motogreen.pt
+
+O relatório contém a agenda da oficina do dia seguinte e os processos ativos.
+O envio normal não é repetido se o relatório desse dia já tiver sido enviado.
+
+Se "ea-php84" não existir, copie o caminho PHP indicado pelo próprio cPanel.
+Confirme que o fuso horário da conta/servidor corresponde a Europe/Lisbon.

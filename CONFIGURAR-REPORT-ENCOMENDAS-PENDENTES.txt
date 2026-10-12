@@ -1,0 +1,24 @@
+E-MOTOGREEN — RELATÓRIO DIÁRIO DE ENCOMENDAS PENDENTES
+
+1. Envie para o servidor o ficheiro:
+   cron/daily-pending-orders-report.php
+
+2. Teste no Terminal do cPanel:
+   /usr/local/bin/php /home/emotomotogreen/public_html/cron/daily-pending-orders-report.php --test
+
+3. No cPanel > Cron Jobs, crie um novo Cron Job diário.
+   Exemplo para envio todos os dias às 08:00:
+   Minuto: 0
+   Hora: 8
+   Dia: *
+   Mês: *
+   Dia da semana: *
+
+4. Comando:
+   /usr/local/bin/php /home/emotomotogreen/public_html/cron/daily-pending-orders-report.php >> /home/emotomotogreen/pending-orders-report.log 2>&1
+
+Destinatários exclusivos deste relatório:
+- l.dalogli@motogreen.pt
+- loja@motogreen.pt
+
+As encomendas cujo estado seja "Enviada" deixam de aparecer no relatório. As encomendas "Enviada Parcialmente" continuam a aparecer por ainda estarem pendentes.

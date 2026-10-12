@@ -1,0 +1,16 @@
+BARRA DE VALORES DOS PROCESSOS
+
+Substituir no FTP:
+
+1. app.js
+2. index.html
+
+Depois faça Ctrl + F5.
+
+A barra representa agora exatamente a percentagem paga:
+
+- Total ou valor pago igual a 0: barra vazia.
+- Pagamento parcial: preenchimento proporcional.
+- Pagamento total ou superior: barra preenchida até 100%.
+
+Não é necessário executar SQL.

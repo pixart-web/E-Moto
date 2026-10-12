@@ -1,0 +1,32 @@
+{
+  "application": "E-Motogreen",
+  "version": "2026.10.07.24",
+  "releasedAt": "2026-10-07T12:00:00+01:00",
+  "features": [
+    "oficina-ate-20h",
+    "processos-entregues-no-historico",
+    "test-drives",
+    "acessorios-incluidos-no-total",
+    "edicao-completa-agendamento-oficina",
+    "bloqueio-dia-inteiro-oficina",
+    "contador-processos-semana",
+    "contabilidade-exportacao-cheques",
+    "contabilidade-exclusoes-manuais",
+    "bloqueio-manha-tarde-oficina",
+    "matricula-cheque-dia-seguinte",
+    "tracking-documentacao-enviada",
+    "processos-ativos-finalizados",
+    "contabilidade-filtros-estados",
+    "contagem-decrescente-cheques",
+    "vencimento-dia-util-seguinte",
+    "bloqueio-agenda-por-horas",
+    "bloqueio-horario-sem-pintar-dia",
+    "auditoria-integridade-clientes-processos",
+    "permissoes-ausencias-reforcadas",
+    "matricula-cheque-associacao-robusta",
+    "reenvio-aviso-contabilidade",
+    "protecao-concorrencia-cheques",
+    "email-matricula-sempre-enviado",
+    "contagem-dias-uteis-cheque"
+  ]
+}

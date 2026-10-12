@@ -1,0 +1,46 @@
+CÓPIAS DE SEGURANÇA DIÁRIAS — E-MOTOGREEN
+
+Ficheiros novos a enviar por FTP:
+
+1. cron/daily-backup.php
+2. private/.htaccess
+
+O backup contém:
+
+- Dados completos da aplicação e app_settings.
+- Clientes, processos, marcações, stock e encomendas.
+- Utilizadores e respetivas palavras-passe protegidas por hash.
+- Estrutura das tabelas para permitir recuperação.
+
+O backup NÃO contém:
+
+- Password SMTP ou password da base de dados.
+- Sessões de login ativas.
+
+CRON NO CPANEL
+
+Criar um novo Cron Job diário, por exemplo às 02:15, com o comando:
+
+/usr/local/bin/php /home/emotomotogreen/public_html/cron/daily-backup.php
+
+Resultado esperado ao testar no Terminal:
+
+Backup criado: /home/emotomotogreen/e-motogreen-backups/e-motogreen-AAAA-MM-DD_HH-MM-SS.json
+
+LOCALIZAÇÃO E RETENÇÃO
+
+- Os ficheiros ficam em /home/emotomotogreen/e-motogreen-backups
+- A pasta está fora de public_html e não pode ser descarregada pela Internet.
+- Mantêm-se automaticamente os últimos 30 dias.
+- Os ficheiros antigos são apagados apenas depois de ultrapassarem 30 dias.
+
+DOWNLOAD MANUAL
+
+No Gestor de Ficheiros do cPanel, abra a pasta e descarregue periodicamente
+um dos ficheiros JSON para outro computador ou armazenamento externo.
+
+RESTAURO
+
+Não importe o JSON diretamente no phpMyAdmin. Em caso de necessidade,
+guarde o ficheiro e utilize-o para preparar um restauro controlado, evitando
+substituir dados mais recentes por engano.

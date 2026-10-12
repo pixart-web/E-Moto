@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b3d2e">
+  <title>E-Motogreen</title>
+  <link rel="icon" type="image/jpeg" href="assets/motogreen-logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta name="emotogreen-version" content="2026.10.07.24">
+  <link rel="stylesheet" href="styles.css?v=20261007-24">
+</head>
+<body>
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-brand"><img src="assets/motogreen-logo.jpg" alt="Moto Green"><div><span class="eyebrow">BEM-VINDO</span><h1>E-Motogreen</h1><p>Gestão central da Motogreen</p></div></div>
+      <form id="loginForm" autocomplete="off"><label><span>Utilizador</span><input name="username" autocomplete="off" required autofocus placeholder="Introduza o utilizador"></label><label><span>Password</span><input name="password" type="password" autocomplete="new-password" required placeholder="Introduza a password"></label><button class="forgot-password" id="forgotPasswordBtn" type="button">Esqueci-me da password</button><p class="login-error" id="loginError" hidden>Utilizador ou password incorretos.</p><button class="btn primary" type="submit">Entrar no E-Motogreen</button></form>
+    </div>
+  </section>
+  <div class="app-shell" id="appShell" hidden>
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Fechar menu">×</button>
+      <a class="brand" href="#dashboard" aria-label="E-Motogreen">
+        <span class="brand-mark"><img src="assets/motogreen-logo.jpg" alt="Logo Moto Green"></span>
+        <span><strong>E-Motogreen</strong></span>
+      </a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="#dashboard" data-route="dashboard"><span>⌂</span> Visão geral</a>
+        <p>COMERCIAL</p>
+        <a href="#processos" data-route="processos"><span>◆</span> Processos <b class="nav-count" id="processNavCount">0</b></a>
+        <a href="#clientes" data-route="clientes"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"></circle><path d="M4.5 21c.6-5 3-7.5 7.5-7.5s6.9 2.5 7.5 7.5"></path></svg></span> Clientes</a>
+        <a href="#motos" data-route="motos"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 8-4 8 4-8 4-8-4Z"></path><path d="M4 7v10l8 4 8-4V7M12 11v10"></path></svg></span> Stock</a>
+        <a href="#catalogo" data-route="catalogo"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="17" r="3"></circle><circle cx="19" cy="17" r="3"></circle><path d="M8 17h5l3-7h-5l-3 7Zm5 0h3m0-7 3 7M9 7h4"></path></svg></span> Catálogo</a>
+        <a href="#encomendas" data-route="encomendas"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg></span> Encomendas Pendentes</a>
+        <a href="#contabilidade" data-route="contabilidade"><span>€</span> Contabilidade</a>
+        <p>OPERAÇÃO</p>
+        <a href="#agenda" data-route="agenda"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6 4-4 4 4-4 4-2-2-8.5 8.5"></path><path d="m8.5 15.5 2 2-3 3a2.1 2.1 0 0 1-3-3l3-3"></path></svg></span> Agenda & oficina</a>
+        <a href="#testdrives" data-route="testdrives"><span>◉</span> Test Drives</a>
+        <a href="#financiamentos" data-route="financiamentos"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 7.5c-.8-1-2.1-1.5-4-1.5-2.2 0-4 1.1-4 3s1.8 2.7 4 3 4 1 4 3-1.8 3-4 3c-1.9 0-3.3-.6-4.2-1.8M12 3v18"></path></svg></span> Financiamentos</a>
+        <a href="#equipa" data-route="equipa"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10h10v5H7zM9 15v6m6-6v6M5 12H2v5h5m12-5h3v5h-5M3 17v3m18-3v3"></path></svg></span> Equipa & férias</a>
+        <p class="admin-nav-item">ADMINISTRAÇÃO</p>
+        <a class="admin-nav-item" href="#admin" data-route="admin"><span>⚙</span> Painel Admin</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="help-card" id="helpCenter" type="button"><b>Precisa de ajuda?</b></button>
+      </div>
+    </aside>
+    <button class="sidebar-overlay" id="sidebarOverlay" type="button" aria-label="Fechar menu" hidden></button>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
+<div class="global-search"><span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span><input id="globalSearch" placeholder="Pesquisar cliente, matrícula, VIN..."></div>
+        <div class="top-actions"><div class="date-chip"><small>Hoje</small><b id="currentDate"></b></div><div class="top-user"><span class="avatar" id="topSessionInitials"></span><div class="top-user-name"><small>Olá,</small><b id="topSessionUserName"></b></div><button class="top-account-btn" id="changePasswordBtn" type="button">Alterar password</button><button class="top-account-btn logout" id="logoutBtn" type="button">Sair</button></div></div>
+      </header>
+      <div id="view" class="view"></div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header><div><span class="eyebrow">NOVO REGISTO</span><h2 id="modalTitle">Criar processo de compra</h2></div><button class="icon-btn" id="closeModal">×</button></header>
+      <form id="processForm">
+        <div class="form-section"><h3>Cliente</h3><p>Escolha um cliente da base de dados ou crie uma ficha nova.</p>
+          <div class="segmented"><button type="button" class="active" data-process-client-type="existing">Cliente existente</button><button type="button" data-process-client-type="new">Cliente novo</button></div>
+          <div class="form-grid" id="existingProcessClient"><label class="full"><span>Cliente existente</span><select name="clientId" id="processClientSelect"><option value="">Selecionar cliente</option></select></label></div>
+          <div class="form-grid" id="newProcessClient" hidden><label><span>Nome</span><input name="newClientName"></label><label><span>Telefone</span><input name="newClientPhone" inputmode="tel"></label><label><span>NIF</span><input name="newClientNif"></label><label><span>Morada</span><input name="newClientAddress"></label></div>
+          <input type="hidden" name="clientType" id="processClientType" value="existing">
+        </div>
+        <div class="form-section"><h3>Condições comerciais e modalidade de pagamento</h3><div class="form-grid">
+          <label><span>Valor da moto (€)</span><input name="price" type="number" min="0" step="0.01" required></label>
+          <label><span>Entrada (€)</span><input name="deposit" type="number" min="0" step="0.01" value="0"></label>
+          <label><span>Acessórios (€)</span><input name="accessories" type="number" min="0" step="0.01" value="0"></label>
+          <label><span>Total do processo (€)</span><input id="processTotalPreview" type="text" value="0,00 €" readonly></label>
+          <label class="trade-in-toggle"><span>Retoma</span><span class="toggle-line"><input type="checkbox" name="hasTradeIn" id="hasTradeIn"> Aceitar uma moto de retoma</span></label>
+          <label><span>Modalidade de pagamento</span><select name="paymentType" id="paymentType"><option>Pronto pagamento</option><option>Financiamento</option></select></label>
+          <label><span>Responsável</span><input name="owner" id="processOwner" readonly></label>
+          <label class="full"><span>Nota inicial</span><textarea name="note" placeholder="Condições acordadas, pedidos especiais ou informação relevante..."></textarea></label>
+        </div></div>
+        <div class="form-section"><h3>Moto</h3><div class="form-grid">
+          <label><span>Condição</span><select name="condition" id="bikeCondition"><option>Nova</option><option>Usada</option></select></label>
+          <label><span>Disponibilidade</span><select name="availability" id="processAvailability"><option>Em stock</option><option>Por encomenda</option></select></label>
+          <label class="full" id="availableStockField"><span>Moto disponível em stock</span><select name="stockBikeId" id="availableStockBike"><option value="">Selecionar moto em loja</option></select></label>
+          <div class="full form-grid" id="newBikeFields">
+            <label><span>Marca</span><select name="newBrand" id="newBrand" required><option value="">Selecionar marca</option><option>CFMoto</option><option>Cyclone</option><option>Sherco</option></select></label>
+            <label><span>Modelo</span><select name="newModel" id="newModel" required><option value="">Selecione primeiro a marca</option></select></label>
+          </div>
+          <label class="full" id="usedBikeField" hidden><span>Marca e modelo da moto usada</span><input name="usedBike" placeholder="Ex.: Honda CB750 Hornet"></label>
+          <label id="bikeVariantField" hidden><span>Configuração</span><select name="bikeVariant" id="bikeVariant"></select></label>
+          <label><span>Cor</span><input name="color" id="bikeColor" list="colorSuggestions" placeholder="Introduzir cor manualmente"><datalist id="colorSuggestions"></datalist></label>
+        </div></div>
+        <div class="form-section finance-fields" id="financeFields" hidden><h3>Dados do financiamento</h3><p>Indique a modalidade e valide os documentos já recebidos.</p>
+          <div class="form-grid"><label class="full"><span>Tipo de financiamento</span><select name="financingType"><option>Financiamento em campanha</option><option>Financiamento com o Flávio</option></select></label></div>
+          <span class="field-title">DOCUMENTOS NECESSÁRIOS</span>
+          <div class="document-checks">
+            <label><input type="checkbox" name="financeDocs" value="CC"> CC</label>
+            <label><input type="checkbox" name="financeDocs" value="Morada"> Morada</label>
+            <label><input type="checkbox" name="financeDocs" value="IBAN"> IBAN</label>
+            <label><input type="checkbox" name="financeDocs" value="Recibos de vencimento"> Recibos de vencimento</label>
+            <label><input type="checkbox" name="financeDocs" value="IRS"> IRS</label>
+            <label><input type="checkbox" name="financeDocs" value="Liquidação IRS"> Liquidação IRS</label>
+            <label><input type="checkbox" name="financeDocs" value="Contrato de trabalho"> Contrato de trabalho</label>
+            <label><input type="checkbox" name="financeDocs" value="Declaração de atividade"> Declaração de atividade</label>
+          </div>
+        </div>
+        <footer><button type="button" class="btn ghost" id="cancelModal">Cancelar</button><button class="btn primary" type="submit">Criar processo</button></footer>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="tradeInModalBackdrop" hidden>
+    <section class="modal small-modal" role="dialog" aria-modal="true">
+      <header><div><span class="eyebrow">RETOMA</span><h2>Adicionar moto usada</h2></div><button class="icon-btn" id="closeTradeInModal">×</button></header>
+      <form id="tradeInForm">
+        <div class="form-section"><p>Esta moto ficará automaticamente em Motos & Stock como “Em loja / sem cliente”.</p><div class="form-grid">
+          <label><span>Marca</span><input name="brand" required placeholder="Ex.: Honda"></label>
+          <label><span>Modelo</span><input name="model" required placeholder="Ex.: CB500X"></label>
+          <label><span>Ano (opcional)</span><input name="year" type="number" min="1950" max="2030"></label>
+          <label><span>Quilómetros (opcional)</span><input name="kilometers" type="number" min="0" step="1" placeholder="Ex.: 12500"></label>
+          <label><span>Cor</span><input name="color" required placeholder="Ex.: Preta"></label>
+          <label><span>Valor da retoma (€)</span><input name="value" type="number" min="0" step="0.01" value="0"></label>
+          <label><span>Referência interna</span><input name="reference" required placeholder="Ex.: RET-26001"></label>
+          <label class="full"><span>Notas</span><textarea name="notes" placeholder="Estado, quilómetros, observações..."></textarea></label>
+        </div></div>
+        <footer><button type="button" class="btn ghost" id="cancelTradeInModal">Cancelar</button><button class="btn primary" type="submit">Guardar retoma</button></footer>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="helpModalBackdrop" hidden>
+    <section class="modal help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+      <header><div><span class="eyebrow">CENTRO DE AJUDA</span><h2 id="helpModalTitle">Chama o Tiago</h2></div><button class="icon-btn" id="closeHelpModal">×</button></header>
+      <div class="help-modal-content"><img src="assets/help-tiago.png" alt="Problem?"><h3>Chama o Tiago</h3></div>
+      <footer><button class="btn primary" id="confirmHelpModal" type="button">Está bem</button></footer>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="passwordModalBackdrop" hidden>
+    <section class="modal small-modal password-modal" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle">
+      <header><div><span class="eyebrow">CONTA</span><h2 id="passwordModalTitle">Alterar password</h2></div><button class="icon-btn" id="closePasswordModal">×</button></header>
+      <form id="passwordForm"><div class="form-section"><p>Escolha uma password com pelo menos 8 caracteres.</p><div class="form-grid password-form-grid">
+        <label class="full"><span>Password atual</span><input name="currentPassword" type="password" autocomplete="current-password" required></label>
+        <label class="full"><span>Nova password</span><input name="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+        <label class="full"><span>Confirmar nova password</span><input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+      </div><p class="login-error" id="passwordError" hidden></p></div><footer><button type="button" class="btn ghost" id="cancelPasswordModal">Cancelar</button><button class="btn primary" type="submit">Guardar nova password</button></footer></form>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="resetPasswordBackdrop" hidden>
+    <section class="modal small-modal password-modal" role="dialog" aria-modal="true" aria-labelledby="resetPasswordTitle">
+      <header><div><span class="eyebrow">RECUPERAÇÃO DE CONTA</span><h2 id="resetPasswordTitle">Repor password</h2></div><button class="icon-btn" id="closeResetPassword">×</button></header>
+      <form id="resetRequestForm"><div class="form-section"><p>Introduza o seu username. Enviaremos um link de recuperação para o email associado à conta.</p><div class="form-grid password-form-grid"><label class="full"><span>Username</span><input name="username" autocomplete="username" required placeholder="Ex.: Tiago"></label></div><p class="reset-message" id="resetRequestMessage" hidden></p></div><footer><button type="button" class="btn ghost" data-close-reset>Cancelar</button><button class="btn primary" type="submit">Enviar email</button></footer></form>
+      <form id="resetPasswordForm" hidden><div class="form-section"><p>Defina uma nova password com pelo menos 8 caracteres.</p><input name="token" type="hidden"><input name="username" type="hidden"><div class="form-grid password-form-grid"><label class="full"><span>Nova password</span><input name="newPassword" type="password" autocomplete="new-password" minlength="8" required></label><label class="full"><span>Confirmar nova password</span><input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label></div><p class="login-error" id="resetPasswordError" hidden></p></div><footer><button type="button" class="btn ghost" data-close-reset>Cancelar</button><button class="btn primary" type="submit">Guardar nova password</button></footer></form>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="clientModalBackdrop" hidden>
+    <section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="clientModalTitle">
+      <header><div><span class="eyebrow">BASE DE CLIENTES</span><h2 id="clientModalTitle">Adicionar novo cliente</h2></div><button class="icon-btn" id="closeClientModal">×</button></header>
+      <form id="clientForm"><div class="form-section"><p>O telefone será validado para evitar registos duplicados.</p><div class="form-grid">
+        <label><span>Nome completo</span><input name="name" required></label>
+        <label><span>Telefone</span><input name="phone" inputmode="tel" required placeholder="Ex.: 912 345 678"></label>
+        <label><span>Email</span><input name="email" type="email"></label>
+        <label><span>NIF</span><input name="nif" inputmode="numeric"></label>
+        <label class="full"><span>Morada</span><input name="address"></label>
+      </div></div><div class="form-section"><h3>Moto do cliente <small>(opcional)</small></h3><p>Pode associar uma moto agora ou adicioná-la posteriormente na ficha do cliente.</p><div class="form-grid">
+        <label><span>Marca</span><select name="clientBikeBrand" id="clientBikeBrand"><option value="">Sem moto por agora</option><option>CFMoto</option><option>Cyclone</option><option>Sherco</option><option value="Outra">Outra marca</option></select></label>
+        <label id="otherBrandField" hidden><span>Outra marca</span><input name="clientBikeOtherBrand" id="clientBikeOtherBrand" placeholder="Introduzir marca"></label>
+        <label id="catalogModelField" hidden><span>Modelo</span><select name="clientBikeModel" id="clientBikeModel"><option value="">Selecione primeiro a marca</option></select></label>
+        <label id="manualModelField" hidden><span>Modelo</span><input name="clientBikeManualModel" id="clientBikeManualModel" placeholder="Introduzir modelo"></label>
+        <label id="clientBikeYearField" hidden><span>Ano</span><select name="clientBikeYear" id="clientBikeYear"></select></label>
+      </div></div><footer><button type="button" class="btn ghost" id="cancelClientModal">Cancelar</button><button class="btn primary" type="submit">Guardar cliente</button></footer></form>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="bookingModalBackdrop" hidden>
+    <section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+      <header><div><span class="eyebrow">OFICINA</span><h2 id="bookingModalTitle">Detalhes da marcação</h2></div><button class="icon-btn" id="closeBookingModal">×</button></header>
+      <form id="bookingEditForm"><input type="hidden" name="bookingId"><div class="form-section"><div class="selected-client booking-audit"><span class="initials" id="bookingScheduledByInitials">—</span><div><small>Agendado por</small><b id="bookingScheduledBy">Registo anterior</b></div></div><div class="form-grid">
+        <label><span>Nome do cliente</span><input name="client" required></label>
+        <label><span>Telefone</span><input name="phone" inputmode="tel" required></label>
+        <label class="full"><span>Moto</span><input name="bike" required></label>
+        <label><span>Data</span><input name="date" type="date" required></label>
+        <label><span>Hora</span><input name="time" type="time" required></label>
+        <label><span>Duração</span><select name="duration"><option value="30">30 minutos</option><option value="60">1 hora</option><option value="90">1h30</option><option value="120">2 horas</option><option value="180">3 horas</option></select></label>
+        <label><span>Responsável</span><select name="technician"><option>Leonardo Dalogli</option><option>Angela Cervellione</option><option>Ana Guerreiro</option><option>Tiago Santos</option><option>Giulia Dalogli</option></select></label>
+        <label class="full"><span>Serviço / trabalho realizado</span><textarea name="service" required></textarea></label>
+        <label class="full"><span>Número da fatura</span><input name="invoice" placeholder="Adicionar após conclusão do serviço"></label>
+        <label><span>Valor a pagar (€)</span><input name="amountDue" type="number" min="0" step="0.01" value="0"></label>
+        <label class="booking-completed-toggle"><span>Estado</span><span class="toggle-line"><input name="completed" type="checkbox"> Serviço concluído / pronto a levantar</span></label>
+      </div></div><footer class="split-footer"><button type="button" class="btn danger" id="deleteBooking">Eliminar marcação</button><span></span><button type="button" class="btn ghost" id="cancelBookingModal">Cancelar</button><button class="btn primary" type="submit">Guardar alterações</button></footer></form>
+    </section>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js?v=20261007-24"></script>
+</body>
+</html>

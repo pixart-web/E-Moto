@@ -1,0 +1,27 @@
+E-MOTOGREEN — RELATÓRIO DE CHEQUES
+===================================
+
+1. No phpMyAdmin, importe:
+database/update-cheque-reports.sql
+
+2. Envie para o servidor:
+- api/smtp-lib.php
+- api/cheque-notifications.php
+- cron/daily-cheque-report.php
+
+3. O SMTP já configurado no private/config.php é reutilizado.
+O único destinatário deste relatório é contabilidade@motogreen.pt.
+
+4. Teste manual no Terminal do cPanel:
+/usr/local/bin/php /home/emotomotogreen/public_html/cron/daily-cheque-report.php
+
+5. Mantenha o Cron Job diário, por exemplo às 08:00. O script controla internamente
+o intervalo e só envia um relatório de 10 em 10 dias:
+0 8 * * *
+
+Comando:
+/usr/local/bin/php /home/emotomotogreen/public_html/cron/daily-cheque-report.php >> /home/emotomotogreen/e-motogreen-cheques.log 2>&1
+
+O relatório inclui apenas cheques pendentes, calcula os dias restantes e é enviado de 10 em 10 dias.
+Quando a Matrícula pedida é validada num processo/financiamento associado, a contabilidade
+recebe um email imediato e o cheque deixa de aparecer como pendente.

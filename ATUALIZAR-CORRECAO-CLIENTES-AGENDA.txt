@@ -1,0 +1,21 @@
+CORREÇÃO — CLIENTES E HISTÓRICO DA OFICINA
+
+Substituir no FTP estes 3 ficheiros:
+
+1. index.html
+2. app.js
+3. api/state.php
+
+Depois de carregar os ficheiros:
+
+1. Termine sessão e volte a entrar.
+2. Faça uma atualização forçada da página (Ctrl + F5).
+3. Abra Clientes e confirme Miguel Guerreiro, Sandro Ferreira e Luc.
+4. Abra cada ficha e confirme o respetivo histórico da oficina.
+
+Não é necessário executar SQL nem alterar o cron.
+
+A correção recupera automaticamente um cliente que ainda exista numa
+marcação da oficina e volta a associar o serviço através do nome/telefone.
+Também impede que dois utilizadores ligados ao mesmo tempo substituam a
+lista de clientes ou marcações um do outro.

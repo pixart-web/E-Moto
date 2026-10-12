@@ -1,0 +1,35 @@
+RECUPERAÇÃO CONFIRMADA DOS PROCESSOS MG-26068 E MG-26069
+
+Substituir no FTP:
+
+1. api/state.php
+2. app.js
+3. index.html
+4. styles.css
+
+Depois faça Ctrl + F5, termine sessão e volte a entrar.
+
+A aplicação volta a criar, apenas se estiverem ausentes:
+
+- MG-26068 — Vera Sofia Silva Guerreiro — CFMoto 450MT
+  Situação da moto: Por encomendar
+  Estado: Aguarda financiamento
+
+- MG-26069 — Epopeia D Aventura - Animação Turistica Lda
+  CFMoto ZFORCE 950 SPORT 4
+  Situação da moto: Em transporte
+  Associada à unidade de stock CFMPT2026/016228
+
+Os valores, condições comerciais e responsáveis que desapareceram da base
+de dados ficam por confirmar. Os processos incluem uma nota de recuperação
+e podem ser corrigidos através do botão Editar.
+
+Também fica garantido que:
+
+- As novas marcações guardam e mostram o utilizador que as criou.
+- Alterar marca/modelo/ano na moto do cliente atualiza a Agenda da oficina.
+- A variante selecionada aparece na lista do stock.
+- A edição de 450MT, 800MT-X e 1000MT-X usa um seletor de variantes.
+- A fatura pro-forma é opcional na edição.
+
+Não é necessário executar SQL nem alterar cron jobs.

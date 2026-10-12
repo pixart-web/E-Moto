@@ -1,0 +1,17 @@
+E-MOTOGREEN — CLIENTES E STOCK
+
+Substituir no FTP:
+- app.js
+- index.html
+
+Não é necessário executar SQL nem alterar os Cron Jobs.
+
+Depois do upload, fazer Ctrl + F5 no navegador.
+
+Alterações:
+- É possível criar um cliente sem preencher dados de uma moto.
+- Clientes e motos no stock aparecem por ordem alfabética.
+- O Stock tem pesquisa por marca, modelo, variante, referência, VIN, cor ou cliente.
+- As variantes aparecem diretamente na listagem.
+- "Editar dados" mostra e permite alterar todos os dados da moto.
+- Uma moto com estado "Entregue" deixa de aparecer no stock ativo, sem perder o respetivo registo.

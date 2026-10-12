@@ -1,0 +1,27 @@
+ATUALIZAÇÃO — PROCESSOS IEDA/DANIEL E VARIANTES NA FICHA DO CLIENTE
+
+Substituir no servidor estes 3 ficheiros:
+
+1. app.js
+2. index.html
+3. api/state.php
+
+O que esta atualização corrige:
+
+- cada processo passa a ter uma identidade interna única;
+- processos de clientes diferentes deixam de se substituir quando partilham, por erro, o mesmo número MG;
+- o processo da IEDA é recuperado pela ficha e pela moto da própria cliente, sem usar a moto do Daniel;
+- ligações incorretas entre uma moto em stock e o processo de outro cliente são desfeitas e reconstruídas corretamente;
+- ao editar uma moto na ficha do cliente, a variante atual aparece selecionada;
+- ao mudar o modelo, a variante é limpa;
+- o seletor de variante só aparece nos modelos que têm variantes configuradas;
+- a alteração continua sincronizada com a moto correspondente no stock.
+
+Depois do upload:
+
+1. terminar sessão e entrar novamente;
+2. atualizar a página com Ctrl+F5;
+3. confirmar na lista de Processos que Daniel e IEDA aparecem separadamente;
+4. abrir a ficha de um cliente com 800MT-X, 1000MT-X ou 450MT e editar a moto para confirmar a variante.
+
+Não é necessário executar SQL para esta atualização.

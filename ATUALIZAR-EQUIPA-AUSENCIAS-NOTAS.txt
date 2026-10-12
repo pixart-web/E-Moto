@@ -1,0 +1,19 @@
+E-MOTOGREEN — EQUIPA, AUSÊNCIAS E NOTAS
+
+Substituir no FTP:
+- app.js
+- index.html
+- styles.css
+
+Adicionar no FTP:
+- api/team-users.php
+
+Não é necessário executar SQL nem alterar os Cron Jobs.
+
+Depois do upload, fazer Ctrl + F5 no navegador.
+
+Funcionalidades:
+- O Boss pode usar "Adicionar Ausência Funcionário" e selecionar qualquer utilizador ativo, incluindo Admin, Funcionário ou Boss.
+- A ausência fica associada ao utilizador selecionado e aparece no respetivo painel.
+- O botão "Adicionar nota" cria uma nota no calendário.
+- Na nota, o dia e a descrição são obrigatórios; as horas são opcionais.

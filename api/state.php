@@ -1,0 +1,241 @@
+<?php
+declare(strict_types=1);
+
+require __DIR__ . '/bootstrap.php';
+
+$user = require_user();
+$allowed = ['clients', 'processes', 'bookings', 'officeBlocks', 'testDrives', 'orders', 'stockBikes', 'absences', 'bikeCatalog'];
+$resourcePanels = ['clients'=>'clientes','processes'=>'processos','bookings'=>'agenda','officeBlocks'=>'agenda','testDrives'=>'testdrives','orders'=>'encomendas','stockBikes'=>'motos','absences'=>'equipa','bikeCatalog'=>'catalogo'];
+$userPermissions = is_array($user['permissions'] ?? null) ? $user['permissions'] : [];
+$canAccess = static function (string $resource) use ($user, $userPermissions, $resourcePanels): bool {
+    if (in_array(($user['role'] ?? ''), ['admin','boss'], true)) return true;
+    if (($user['role'] ?? '') !== 'employee') return false;
+    return in_array($resourcePanels[$resource] ?? '', $userPermissions, true);
+};
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+$readResource = static function (PDO $pdo, string $resource, bool $forUpdate = false): array {
+    $sql = 'SELECT setting_value FROM app_settings WHERE setting_key = ? LIMIT 1' . ($forUpdate ? ' FOR UPDATE' : '');
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['state_' . $resource]);
+    $decoded = json_decode((string)($statement->fetchColumn() ?: '[]'), true);
+    return is_array($decoded) ? $decoded : [];
+};
+$phoneKey = static fn(mixed $value): string => preg_replace('/^351/', '', preg_replace('/\D+/', '', (string)$value) ?? '') ?? '';
+$nameKey = static fn(mixed $value): string => strtolower(trim(preg_replace('/\s+/', ' ', (string)$value) ?? ''));
+$freshId = static function (): int {
+    return (int)floor(microtime(true) * 1000000) + random_int(0, 99);
+};
+$freshProcessId = static function (array $records): string {
+    $used = [];
+    $maximum = 26066;
+    foreach ($records as $record) {
+        $id = (string)($record['id'] ?? '');
+        $used[$id] = true;
+        if (preg_match('/^MG-(\d+)$/', $id, $match)) $maximum = max($maximum, (int)$match[1]);
+    }
+    do { $candidate = 'MG-' . (++$maximum); } while (isset($used[$candidate]));
+    return $candidate;
+};
+
+if ($method === 'GET') {
+    $statement = $pdo->query("SELECT setting_key, setting_value FROM app_settings WHERE setting_key LIKE 'state_%'");
+    $state = array_fill_keys($allowed, []);
+    foreach ($statement->fetchAll() as $row) {
+        $key = substr($row['setting_key'], 6);
+        if (in_array($key, $allowed, true) && $canAccess($key)) {
+            $decoded = json_decode((string)$row['setting_value'], true);
+            $decoded = is_array($decoded) ? $decoded : [];
+            if ($key === 'absences' && ($user['role'] ?? '') !== 'boss') {
+                $userName = trim((string)($user['name'] ?? ''));
+                $decoded = array_values(array_filter($decoded, static fn(array $absence): bool => trim((string)($absence['employee'] ?? '')) === $userName));
+            }
+            $state[$key] = $decoded;
+        }
+    }
+    if (!empty($state['clients'])) {
+        $findClient = static function (array $record) use (&$state, $phoneKey, $nameKey): ?array {
+            $recordId = (string)($record['clientId'] ?? '');
+            $recordPhone = $phoneKey($record['phone'] ?? '');
+            $recordName = $nameKey($record['client'] ?? $record['name'] ?? '');
+            foreach ($state['clients'] as $client) {
+                if ($recordId !== '' && $recordId === (string)($client['id'] ?? '')) return $client;
+                $clientPhone = $phoneKey($client['phone'] ?? '');
+                if ($recordPhone !== '' && $recordPhone === $clientPhone) return $client;
+                if ($recordName !== '' && $recordName === $nameKey($client['name'] ?? '') && ($recordPhone === '' || $clientPhone === '')) return $client;
+            }
+            return null;
+        };
+        foreach ($state['processes'] as &$process) {
+            $client = $findClient($process);
+            if ($client) $process['clientId'] = $client['id'];
+        }
+        unset($process);
+        foreach ($state['bookings'] as &$booking) {
+            $client = $findClient($booking);
+            if ($client) $booking['clientId'] = $client['id'];
+        }
+        unset($booking);
+        foreach ($state['stockBikes'] as &$bike) {
+            if (!empty($bike['processId'])) {
+                foreach ($state['processes'] as $process) {
+                    if ((string)($process['id'] ?? '') === (string)$bike['processId'] && !empty($process['clientId'])) {
+                        $bike['clientId'] = $process['clientId'];
+                        break;
+                    }
+                }
+            }
+        }
+        unset($bike);
+    }
+    json_response(['ok' => true, 'initialized' => count($state) > 0, 'state' => $state]);
+}
+
+if ($method === 'PUT') {
+    $input = json_input();
+    verify_csrf($input);
+    $resource = (string)($input['resource'] ?? '');
+    $data = $input['data'] ?? null;
+    if (!in_array($resource, $allowed, true) || !is_array($data)) {
+        json_response(['ok' => false, 'error' => 'Recurso inválido.'], 422);
+    }
+    if (!$canAccess($resource)) {
+        json_response(['ok' => false, 'error' => 'Sem permissão para alterar este módulo.'], 403);
+    }
+    if ($resource === 'absences' && ($user['role'] ?? '') !== 'boss') {
+        $userName = trim((string)($user['name'] ?? ''));
+        $data = array_values(array_filter($data, static fn(array $absence): bool => trim((string)($absence['employee'] ?? '')) === $userName));
+        $existingStatement = $pdo->prepare("SELECT setting_value FROM app_settings WHERE setting_key = 'state_absences' LIMIT 1");
+        $existingStatement->execute();
+        $existing = json_decode((string)($existingStatement->fetchColumn() ?: '[]'), true);
+        $existing = is_array($existing) ? $existing : [];
+        $otherUsers = array_values(array_filter($existing, static fn(array $absence): bool => trim((string)($absence['employee'] ?? '')) !== $userName));
+        $data = array_merge($otherUsers, $data);
+    }
+    $pdo->beginTransaction();
+    try {
+        if (in_array($resource, ['clients','bookings','officeBlocks','testDrives','processes','orders','stockBikes','absences'], true)) {
+            $existing = $readResource($pdo, $resource, true);
+            foreach ($data as $incoming) {
+                if (!is_array($incoming)) continue;
+                $match = null;
+                foreach ($existing as $index => $stored) {
+                    if (!is_array($stored)) continue;
+                    $incomingUid = trim((string)($incoming['uid'] ?? ''));
+                    $storedUid = trim((string)($stored['uid'] ?? ''));
+                    if ($incomingUid !== '' && $incomingUid === $storedUid) { $match = $index; break; }
+                    if ($resource === 'clients') {
+                        $incomingPhone = $phoneKey($incoming['phone'] ?? '');
+                        $storedPhone = $phoneKey($stored['phone'] ?? '');
+                        $samePhone = $incomingPhone !== '' && $incomingPhone === $storedPhone;
+                        $sameIdentity = $nameKey($incoming['name'] ?? '') === $nameKey($stored['name'] ?? '') && (!$incomingPhone || !$storedPhone || $samePhone);
+                        if ($samePhone || $sameIdentity) { $match = $index; break; }
+                    } elseif ($resource === 'bookings') {
+                        $sameId = (string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '');
+                        $sameBooking = $nameKey($incoming['client'] ?? '') === $nameKey($stored['client'] ?? '')
+                            && (string)($incoming['date'] ?? '') === (string)($stored['date'] ?? '')
+                            && (string)($incoming['time'] ?? '') === (string)($stored['time'] ?? '')
+                            && $nameKey($incoming['service'] ?? '') === $nameKey($stored['service'] ?? '');
+                        if ($sameId || $sameBooking) { $match = $index; break; }
+                    } elseif ($resource === 'testDrives') {
+                        $sameId = (string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '');
+                        if ($sameId) { $match = $index; break; }
+                    } elseif ($resource === 'processes') {
+                        $sameUid = $incomingUid !== '' && $incomingUid === $storedUid;
+                        $sameClientId = (string)($incoming['clientId'] ?? '') !== '' && (string)($incoming['clientId'] ?? '') === (string)($stored['clientId'] ?? '');
+                        $sameClientName = $nameKey($incoming['client'] ?? '') !== '' && $nameKey($incoming['client'] ?? '') === $nameKey($stored['client'] ?? '');
+                        $sameLegacyProcess = (string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '') && ($sameClientId || $sameClientName);
+                        if ($sameUid || $sameLegacyProcess) { $match = $index; break; }
+                    } elseif ((string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '')) {
+                        $match = $index;
+                        break;
+                    }
+                }
+                if ($match !== null) {
+                    if (isset($existing[$match]['id'])) $incoming['id'] = $existing[$match]['id'];
+                    if (!empty($existing[$match]['uid'])) $incoming['uid'] = $existing[$match]['uid'];
+                    if ($resource === 'stockBikes') {
+                        $storedChequeVersion = (string)($existing[$match]['chequeStateUpdatedAt'] ?? '');
+                        $incomingChequeVersion = (string)($incoming['chequeStateUpdatedAt'] ?? '');
+                        if ($storedChequeVersion !== '' && ($incomingChequeVersion === '' || strcmp($incomingChequeVersion, $storedChequeVersion) < 0)) {
+                            foreach (['chequeDueDate','chequeCollectedEarly','chequeCollectionTriggeredAt','chequeStateUpdatedAt','chequeNotificationPending','chequeNotificationError'] as $field) {
+                                if (array_key_exists($field, $existing[$match])) $incoming[$field] = $existing[$match][$field];
+                                else unset($incoming[$field]);
+                            }
+                        }
+                    }
+                    $existing[$match] = array_replace($existing[$match], $incoming);
+                    continue;
+                }
+                $idCollision = false;
+                foreach ($existing as $stored) {
+                    if ((string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '')) { $idCollision = true; break; }
+                }
+                if ($idCollision || !isset($incoming['id'])) $incoming['id'] = $resource === 'processes' ? $freshProcessId($existing) : $freshId();
+                if (empty($incoming['uid'])) $incoming['uid'] = rtrim($resource, 's') . '-' . bin2hex(random_bytes(12));
+                $existing[] = $incoming;
+            }
+            $data = array_values($existing);
+        }
+        if ($resource === 'bookings') {
+            $serverClients = $readResource($pdo, 'clients');
+            foreach ($data as &$booking) {
+                $bookingPhone = $phoneKey($booking['phone'] ?? '');
+                $bookingName = $nameKey($booking['client'] ?? '');
+                foreach ($serverClients as $client) {
+                    $samePhone = $bookingPhone !== '' && $bookingPhone === $phoneKey($client['phone'] ?? '');
+                    $clientPhone = $phoneKey($client['phone'] ?? '');
+                    $sameName = $bookingName !== '' && $bookingName === $nameKey($client['name'] ?? '') && ($bookingPhone === '' || $clientPhone === '');
+                    if ($samePhone || $sameName) { $booking['clientId'] = $client['id']; break; }
+                }
+            }
+            unset($booking);
+        }
+        $encoded = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        $statement = $pdo->prepare('INSERT INTO app_settings (setting_key, setting_value, updated_by) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_by = VALUES(updated_by)');
+        $statement->execute(['state_' . $resource, $encoded, $user['id']]);
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        throw $error;
+    }
+    json_response(['ok' => true, 'resource' => $resource, 'data' => $data, 'updatedAt' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM)]);
+}
+
+if ($method === 'DELETE') {
+    $input = json_input();
+    verify_csrf($input);
+    $resource = (string)($input['resource'] ?? '');
+    $id = (string)($input['id'] ?? '');
+    $uid = trim((string)($input['uid'] ?? ''));
+    if (!in_array($resource, ['clients','bookings','officeBlocks','testDrives','processes','orders','stockBikes','absences'], true) || $id === '') json_response(['ok' => false, 'error' => 'Pedido inválido.'], 422);
+    if (!$canAccess($resource)) json_response(['ok' => false, 'error' => 'Sem permissão para alterar este módulo.'], 403);
+    $pdo->beginTransaction();
+    try {
+        $data = $readResource($pdo, $resource, true);
+        if ($resource === 'absences' && ($user['role'] ?? '') !== 'boss') {
+            $userName = trim((string)($user['name'] ?? ''));
+            foreach ($data as $item) {
+                $isTarget = $uid !== '' ? (string)($item['uid'] ?? '') === $uid : (string)($item['id'] ?? '') === $id;
+                if ($isTarget && trim((string)($item['employee'] ?? '')) !== $userName) {
+                    $pdo->rollBack();
+                    json_response(['ok' => false, 'error' => 'Só pode eliminar as suas próprias ausências.'], 403);
+                }
+            }
+        }
+        $data = array_values(array_filter($data, static function (array $item) use ($resource, $id, $uid): bool {
+            if ($uid !== '') return (string)($item['uid'] ?? '') !== $uid;
+            return (string)($item['id'] ?? '') !== $id;
+        }));
+        $encoded = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        $statement = $pdo->prepare('INSERT INTO app_settings (setting_key, setting_value, updated_by) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_by = VALUES(updated_by)');
+        $statement->execute(['state_' . $resource, $encoded, $user['id']]);
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        throw $error;
+    }
+    json_response(['ok' => true, 'resource' => $resource]);
+}
+
+json_response(['ok' => false, 'error' => 'Método não permitido.'], 405);

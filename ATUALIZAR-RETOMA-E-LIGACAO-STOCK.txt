@@ -1,0 +1,25 @@
+RETOMA EDITÁVEL E LIGAÇÃO AUTOMÁTICA AO PROCESSO
+
+Substituir no FTP:
+
+1. app.js
+2. index.html
+
+Depois faça Ctrl + F5 e volte a iniciar sessão.
+
+Retoma:
+
+- Em Editar processo pode ativar ou retirar a retoma.
+- Pode alterar referência, valor, marca, modelo, ano, quilómetros, cor e notas.
+- Uma nova retoma é criada automaticamente no stock como moto usada.
+- Alterações posteriores atualizam a mesma unidade de stock.
+
+Associação da moto vendida:
+
+- Ao associar no stock uma moto a um cliente, o sistema procura o processo
+  ativo desse cliente e associa também a unidade ao processo.
+- A marca, modelo, variante, cor e situação do stock são atualizados no processo.
+- Se houver uma correspondência exata entre as motos, essa tem prioridade.
+- Se existir apenas um processo ativo sem moto, a associação é automática.
+
+Não é necessário executar SQL.

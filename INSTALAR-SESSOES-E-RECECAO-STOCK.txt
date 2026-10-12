@@ -1,0 +1,25 @@
+E-MOTOGREEN — SESSÕES SIMULTÂNEAS E RECEÇÃO DE MOTOS
+
+IMPORTANTE: execute primeiro o SQL e só depois substitua os ficheiros PHP.
+
+1. No cPanel > phpMyAdmin, selecione a base de dados do E-Motogreen.
+
+2. Abra o separador SQL e execute o conteúdo de:
+   database/update-multi-user-sessions.sql
+
+3. No FTP, substitua:
+   app.js
+   index.html
+   api/auth.php
+   api/bootstrap.php
+
+4. Limpe a cache do navegador com Ctrl + F5 e volte a iniciar sessão.
+
+Depois desta atualização, cada dispositivo ou separador mantém uma sessão própria.
+O início de sessão de um utilizador já não termina a sessão dos restantes utilizadores.
+
+Na receção de uma moto, o método de pagamento pode ser:
+- Pronto pagamento
+- Cheque (abre número do cheque e prazo de cobrança)
+
+Também ficam disponíveis Fatura Nº e VIN, ambos opcionais e editáveis posteriormente em "Editar dados".

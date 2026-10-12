@@ -1,0 +1,21 @@
+CHECKLIST E UTILIZADOR DA MARCAÇÃO
+
+Substituir no FTP:
+
+1. index.html
+2. app.js
+
+Depois faça uma atualização forçada da página com Ctrl + F5.
+
+Checklist:
+- Um passo por validar pode ser marcado diretamente na ficha do processo.
+- Depois de marcado fica bloqueado.
+- Fica associado ao primeiro utilizador que o validou.
+- O estado do processo é atualizado automaticamente.
+
+Agenda da oficina:
+- As novas marcações guardam o utilizador autenticado.
+- Ao abrir o serviço aparece "Agendado por" e o respetivo nome.
+- Marcações antigas, anteriores a esta atualização, mostram "Registo anterior".
+
+Não é necessário executar SQL ou alterar os cron jobs.

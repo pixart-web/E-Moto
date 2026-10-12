@@ -1,0 +1,28 @@
+RECUPERAÇÃO DE PROCESSOS E EDIÇÃO DO STOCK
+
+Substituir no FTP, preferencialmente por esta ordem:
+
+1. api/state.php
+2. app.js
+3. index.html
+
+Depois, no mesmo computador onde anteriormente apareciam os 3 processos:
+
+1. Faça Ctrl + F5.
+2. Termine sessão e volte a entrar, se necessário.
+3. Abra Processos e confirme que voltam a aparecer os 3 registos.
+
+IMPORTANTE: não limpe os dados do navegador antes desta recuperação. A
+aplicação utiliza a cópia local existente para devolver ao servidor os
+processos que desapareceram da lista online.
+
+Alterações adicionais:
+
+- A fatura pro-forma passou a ser opcional na edição da moto.
+- Nos modelos 450MT, 800MT-X e 1000MT-X, a variante é editada através de
+  um seletor com as opções corretas.
+- A variante guardada aparece na lista de stock.
+- As gravações simultâneas deixam de substituir a lista de processos.
+- Um processo apagado intencionalmente não é recuperado por outro navegador.
+
+Não é necessário executar SQL ou alterar os cron jobs.

@@ -1,0 +1,19 @@
+DISPONIBILIDADE DA MOTO NO NOVO PROCESSO
+
+Substituir no FTP:
+
+1. app.js
+2. index.html
+
+Depois faça Ctrl + F5.
+
+Ao criar qualquer processo, incluindo financiamento, pode escolher:
+
+- Em stock: apresenta as motos disponíveis no sistema e associa a unidade
+  selecionada ao processo e ao cliente.
+- Por encomenda: permite introduzir a marca, modelo, variante e cor da moto
+  que será encomendada.
+
+A lista de motos em stock apresenta referência, marca, modelo, variante e cor.
+
+Não é necessário executar SQL.

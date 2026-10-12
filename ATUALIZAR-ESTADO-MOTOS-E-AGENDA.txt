@@ -1,0 +1,22 @@
+ESTADO DAS MOTOS, VARIANTES E SINCRONIZAÇÃO DA OFICINA
+
+Substituir no FTP:
+
+1. index.html
+2. app.js
+3. styles.css
+
+Depois faça uma atualização forçada com Ctrl + F5.
+
+Alterações:
+
+- Um processo sem moto do stock associada mostra "Por encomendar".
+- Com uma moto associada, mostra o estado real do stock: Encomendada,
+  Em transporte, Recebida, Em preparação, Em loja ou Entregue.
+- Deixa de aparecer "Aguarda aprovação" como situação da moto.
+- A variante aparece junto ao nome/modelo da moto no processo e no stock.
+- Alterar marca, modelo ou ano da moto na ficha do cliente atualiza as
+  marcações desse cliente na Agenda da oficina.
+- Foi acrescentado espaço entre o nome/modelo e o ano na edição do cliente.
+
+Não é necessário executar SQL ou alterar os cron jobs.

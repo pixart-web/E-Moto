@@ -1,0 +1,19 @@
+E-MOTOGREEN — PAGAMENTOS, CHECKLIST E MOTOS DO CLIENTE
+
+Substituir no FTP:
+- app.js
+- index.html
+
+Não é necessário executar SQL nem alterar os Cron Jobs.
+
+Depois do upload, fazer Ctrl + F5 no navegador.
+
+Alterações:
+- A encomenda de uma moto permite escolher Cheque ou Pagamento antecipado.
+- No Cheque, os dados ficam por preencher até à receção da moto.
+- Em Pagamento antecipado, é obrigatório indicar a fatura pro-forma.
+- A checklist fica bloqueada na consulta e só pode ser alterada através de Editar.
+- Cada pisco conserva o nome da primeira pessoa que o ativou.
+- O estado do processo é calculado pelo passo mais recente da checklist.
+- Alterar a checklist não apaga VIN, fatura ou outros dados da moto.
+- Na edição do cliente é possível editar e apagar motos associadas.

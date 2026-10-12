@@ -1,0 +1,11 @@
+private/config.php
+private/backups/
+backups/
+uploads/
+*.log
+*.zip
+.env
+.env.*
+.DS_Store
+Thumbs.db
+
