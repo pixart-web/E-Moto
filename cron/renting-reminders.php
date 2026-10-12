@@ -42,8 +42,8 @@ foreach ($rentings as $renting) {
     $rows .= '<tr>'
         . '<td><b>' . $e($renting['name'] ?? '') . '</b></td>'
         . '<td>' . $e($renting['motorcycle'] ?? '') . '</td>'
-        . '<td>' . $e($formatDate($renting['pickupDate'] ?? $renting['date'] ?? '')) . '</td>'
-        . '<td>' . $e($formatDate($renting['returnDate'] ?? '')) . '</td>'
+        . '<td>' . $e($formatDate($renting['pickupDate'] ?? $renting['date'] ?? '')) . '<br><small>' . $e($renting['pickupTime'] ?? 'Hora não indicada') . '</small></td>'
+        . '<td>' . $e($formatDate($renting['returnDate'] ?? '')) . '<br><small>' . $e($renting['returnTime'] ?? 'Hora não indicada') . '</small></td>'
         . '<td>' . $e($renting['phone'] ?? $renting['contact'] ?? '') . '<br><small>' . $e($renting['email'] ?? '') . '</small></td>'
         . '</tr>';
 }
