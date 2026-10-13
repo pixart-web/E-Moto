@@ -1,4 +1,4 @@
-AVISO AUTOMÁTICO DE RENTING — 2 DIAS ANTES
+AVISO AUTOMÁTICO DA AGENDA — 2 DIAS ANTES
 =================================================
 
 1. Envie o ficheiro cron/renting-reminders.php para a mesma pasta no servidor.
@@ -12,5 +12,5 @@ AVISO AUTOMÁTICO DE RENTING — 2 DIAS ANTES
    /usr/local/bin/php /home/emotomotogreen/public_html/cron/renting-reminders.php --test
 
 O email é enviado para l.dalogli@motogreen.pt quando existir pelo menos um
-levantamento de renting marcado para daí a dois dias. A proteção contra duplicados
+levantamento de renting ou início de evento marcado para daí a dois dias. A proteção contra duplicados
 usa a tabela scheduled_report_runs que já existe no E-Motogreen.

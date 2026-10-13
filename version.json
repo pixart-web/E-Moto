@@ -1,7 +1,7 @@
 {
   "application": "E-Motogreen",
-  "version": "2026.10.12.27",
-  "releasedAt": "2026-10-12T12:00:00+01:00",
+  "version": "2026.10.13.28",
+  "releasedAt": "2026-10-13T12:00:00+01:00",
   "features": [
     "oficina-ate-20h",
     "processos-entregues-no-historico",
@@ -12,6 +12,12 @@
     "renting-horas-levantamento-entrega",
     "encomendas-estatisticas-rentabilidade",
     "encomendas-comissoes-pagamento",
+    "agenda-test-renting-eventos",
+    "eventos-aviso-dois-dias",
+    "stock-prazo-entrega",
+    "oficina-marcacoes-simultaneas-lado-a-lado",
+    "oficina-mensal-todas-marcacoes",
+    "estado-pronta-acionado-por-moto-preparada",
     "acessorios-incluidos-no-total",
     "edicao-completa-agendamento-oficina",
     "bloqueio-dia-inteiro-oficina",
