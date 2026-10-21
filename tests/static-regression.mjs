@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
+const app=read('app.js'),state=read('api/state.php'),backup=read('api/backup-lib.php'),admin=read('api/admin-users.php');
+assert.match(app,/const processOutstanding = process =>[^\r\n]*processTradeInValue\(process\)/,'retoma deve abater à dívida');
+assert.match(state,/FOR UPDATE/,'escritas devem bloquear o snapshot');
+assert.match(state,/state_deleted_/,'eliminações devem criar tombstones');
+assert.match(state,/incomingVersion !== \$storedVersion/,'concorrência deve validar versão');
+assert.match(backup,/hash\('sha256'/,'backup deve validar checksums');
+assert.match(backup,/dirname\(__DIR__, 2\).*e-motogreen-backups/,'backup deve ficar fora da pasta pública');
+assert.match(admin,/contabilidade/,'contabilidade deve ser uma permissão atribuível');
+assert.doesNotMatch(read('private/config.example.php'),/Motogreen\.\d+|OuOnjUs/,'exemplo não pode conter passwords reais');
+console.log('Static regression checks: OK');

@@ -8,7 +8,7 @@ if (($currentUser['role'] ?? '') !== 'admin') {
     json_response(['ok' => false, 'error' => 'Acesso reservado a administradores.'], 403);
 }
 
-$allowedPermissions = ['dashboard','processos','clientes','motos','catalogo','encomendas','agenda','testdrives','financiamentos','equipa'];
+$allowedPermissions = ['dashboard','processos','clientes','motos','catalogo','encomendas','contabilidade','agenda','testdrives','financiamentos','equipa'];
 $normalizePermissions = static function (mixed $value) use ($allowedPermissions): array {
     if (!is_array($value)) return [];
     return array_values(array_intersect($allowedPermissions, array_map('strval', $value)));

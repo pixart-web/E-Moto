@@ -1,6 +1,6 @@
 {
   "application": "E-Motogreen",
-  "version": "2026.10.21.48",
+  "version": "2026.10.21.49-audit",
   "releasedAt": "2026-10-19T12:00:00+01:00",
   "features": [
     "oficina-ate-20h",
@@ -75,6 +75,10 @@
     "fila-local-recuperacao-sincronizacao",
     "encomendas-exportacao-pdf-financeira",
     "retoma-gravada-e-deduzida-processo",
-    "legenda-retoma-apenas-quando-aplicavel"
+    "legenda-retoma-apenas-quando-aplicavel",
+    "backups-zip-manifesto-checksums",
+    "backups-historico-download-admin",
+    "restauro-cli-validado-com-backup-seguranca",
+    "permissao-contabilidade-atribuivel"
   ]
 }

@@ -24,4 +24,8 @@ return [
         'from_email' => 'marketing@motogreen.pt',
         'from_name' => 'E-Motogreen',
     ],
+    'backups' => [
+        // Nunca definir abaixo de 2. Recomenda-se também uma cópia externa ao servidor.
+        'retention_count' => 30,
+    ],
 ];
