@@ -28,6 +28,17 @@ services:
       - emoto_audit_private:/var/www/html/private
       - ./tests/integration/config.php:/var/www/html/private/config.php:ro
       - emoto_audit_backups:/var/www/e-motogreen-backups
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.49.1-noble
+    profiles: ["e2e"]
+    depends_on:
+      - app
+    working_dir: /tests
+    environment:
+      BASE_URL: http://app
+    volumes:
+      - ./tests/e2e:/tests
+    command: sh -c "npm install --no-audit --no-fund && npx playwright test"
 volumes:
   emoto_audit_db:
   emoto_audit_backups:

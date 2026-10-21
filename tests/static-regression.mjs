@@ -4,6 +4,8 @@ const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 const app=read('app.js'),state=read('api/state.php'),backup=read('api/backup-lib.php'),admin=read('api/admin-users.php');
 const android=read('android-app/app/src/main/java/pt/motogreen/emoto/MainActivity.java');
 assert.match(app,/const processOutstanding = process =>[^\r\n]*processTradeInValue\(process\)/,'retoma deve abater à dívida');
+assert.match(app,/process\.basePrice=enteredBase;priceInput\.value=total/,'edição deve manter basePrice e total coerentes');
+assert.doesNotMatch(app,/openProcessEditorAgreedTotalBase/,'editor não deve sobrepor o preço base legado com o total');
 assert.match(state,/FOR UPDATE/,'escritas devem bloquear o snapshot');
 assert.match(state,/state_deleted_/,'eliminações devem criar tombstones');
 assert.match(state,/incomingVersion !== \$storedVersion/,'concorrência deve validar versão');

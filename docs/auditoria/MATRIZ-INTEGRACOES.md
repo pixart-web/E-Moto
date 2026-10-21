@@ -12,3 +12,16 @@
 | Stock | recebida | ativa dados de pagamento/cheque | pronto pagamento vs cheque |
 | Ausência | criar/ler | Boss vê todos; restantes apenas próprios | backend já filtra |
 | Backup | criar | BD + documentos + manifesto/checksums | restauro isolado obrigatório |
+
+## Cenários funcionais obrigatórios
+
+| Cenário | Entidades | Resultado esperado | Estado |
+|---|---|---|---|
+| A Cliente e venda | cliente→processo→stock→pagamentos→entrega | processo arquivado, stock entregue, compra no cliente e dashboard atualizado | Preparado parcialmente; não executado |
+| B Retoma | processo→moto usada→stock→valores | uma única retoma e dívida correta após edição | Dados/teste financeiro preparados; não executado |
+| C Oficina | cliente→moto→marcação→conclusão→PDF | ligação por UID/clientId e histórico coerente | Propagação preparada; não executado |
+| D Encomendas/stock | encomenda→custos→receção→processo | margens e estados coerentes | Não testado |
+| E Contabilidade | processo→cheque→matrícula→vencimento | estado, total, email e exportação coerentes | Não testado |
+| F Agenda | Test Drive/Renting/Evento | edição, intervalo, sessão e lembrete coerentes | Não testado |
+| G Equipa/permissões | Admin/Boss/Funcionário/inválido | backend e frontend negam/permitem igualmente | Casos preparados parcialmente |
+| H Concorrência | duas sessões | 409 em versão antiga, sem ressurreição | Playwright preparado; não executado |
