@@ -21,5 +21,6 @@ Branch: `audit/emoto-integrity-backup`. Base auditada: `f7ac2e0`. A produção e
 | AUD-004 | Média | Funções antigas de recuperação de clientes específicos permanecem em `app.js` | Não são chamadas; remoção proposta, não executada para preservar compatibilidade |
 | AUD-005 | Alta | Um único documento JS com várias sobreposições de funções aumenta risco de regressão | Pendente; refatoração faseada requer aprovação |
 | AUD-006 | Média | Não existe suíte funcional automatizada nem ambiente MySQL de teste no repositório | Criado teste estático inicial; integração real pendente |
+| AUD-007 | Alta | Roles desconhecidos recebiam acesso visual a todos os painéis exceto Admin | Corrigido para negar acesso por omissão |
 
 Não foi encontrada evidência suficiente para declarar cobertura integral ou ausência de bugs.

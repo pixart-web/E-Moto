@@ -9,5 +9,6 @@ assert.match(state,/incomingVersion !== \$storedVersion/,'concorrência deve val
 assert.match(backup,/hash\('sha256'/,'backup deve validar checksums');
 assert.match(backup,/dirname\(__DIR__, 2\).*e-motogreen-backups/,'backup deve ficar fora da pasta pública');
 assert.match(admin,/contabilidade/,'contabilidade deve ser uma permissão atribuível');
+assert.match(app,/currentUser\?\.role!=='employee'\)return false/,'roles desconhecidos não podem obter acesso por omissão');
 assert.doesNotMatch(read('private/config.example.php'),/Motogreen\.\d+|OuOnjUs/,'exemplo não pode conter passwords reais');
 console.log('Static regression checks: OK');
