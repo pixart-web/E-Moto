@@ -18,10 +18,10 @@
 | Cenário | Entidades | Resultado esperado | Estado |
 |---|---|---|---|
 | A Cliente e venda | cliente→processo→stock→pagamentos→entrega | processo arquivado, stock entregue, compra no cliente e dashboard atualizado | Preparado parcialmente; não executado |
-| B Retoma | processo→moto usada→stock→valores | uma única retoma e dívida correta após edição | Dados/teste financeiro preparados; não executado |
+| B Retoma | processo→moto usada→stock→valores | uma única retoma e dívida correta após edição | Corrigida associação após submit recusado; execução pendente |
 | C Oficina | cliente→moto→marcação→conclusão→PDF | ligação por UID/clientId e histórico coerente | Propagação preparada; não executado |
 | D Encomendas/stock | encomenda→custos→receção→processo | margens e estados coerentes | Não testado |
-| E Contabilidade | processo→cheque→matrícula→vencimento | estado, total, email e exportação coerentes | Não testado |
+| E Contabilidade | processo→cheque→matrícula→vencimento | estado, total, email e exportação coerentes | Validação/transação/fila corrigidas; SMTP e execução pendentes |
 | F Agenda | Test Drive/Renting/Evento | edição, intervalo, sessão e lembrete coerentes | Não testado |
 | G Equipa/permissões | Admin/Boss/Funcionário/inválido | backend e frontend negam/permitem igualmente | Casos preparados parcialmente |
 | H Concorrência | duas sessões | 409 em versão antiga, sem ressurreição | Playwright preparado; não executado |

@@ -5,18 +5,18 @@ Estado em 21/10/2026. Nenhuma alteração foi aplicada à produção.
 | Módulo | Estado | Evidência / próximo passo |
 |---|---|---|
 | Login e sessões | Ainda não testado E2E | Casos Playwright e HTTP preparados |
-| Permissões | Corrigido, aguardando validação | deny-by-default e Contabilidade atribuível |
+| Permissões | Corrigido, aguardando validação | deny-by-default, cargo Boss e dependências de leitura/escrita |
 | Clientes | Ainda não testado integralmente | E2E de refresh e propagação para Oficina preparado |
 | Processos | Corrigido, aguardando validação | AUD-008 preço/base/acessórios; cenário venda pendente |
-| Retomas | Ainda não testado integralmente | dados sintéticos e cálculo preparados |
-| Stock | Ainda não testado integralmente | relação processo/cliente coberta no E2E preparado |
+| Retomas | Corrigido, aguardando validação | criação recusada já não pode alterar outro processo |
+| Stock | Corrigido, aguardando validação | relações por UID e valor do cheque na receção |
 | Oficina | Ainda não testado integralmente | propagação de cliente preparada; PDF/conclusão pendentes |
 | Agenda | Ainda não testado | Test Drive/Renting/Evento requerem E2E adicional |
 | Encomendas | Ainda não testado | margens, métodos e persistência pendentes |
-| Contabilidade | Ainda não testado | cheque/vencimento/email/exportações pendentes |
+| Contabilidade | Corrigido, aguardando validação | associação do cheque, transação e fila idempotente; email real não testado |
 | Equipa | Ainda não testado | visibilidade Boss/Funcionário pendente |
 | Concorrência | Teste preparado | duas sessões e HTTP 409; execução pendente |
-| Android | Validado apenas estaticamente | domínio e recursos PT/IT; build real pendente |
+| Android | Validado apenas estaticamente | domínio e recursos PT/IT; `assembleDebug --offline` não produziu saída em 2 minutos e foi interrompido |
 
 ## Implementação efetiva do frontend
 

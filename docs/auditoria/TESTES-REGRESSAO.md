@@ -27,7 +27,7 @@ docker compose -f docker-compose.audit.yml --profile e2e run --rm e2e
 docker compose -f docker-compose.audit.yml down -v
 ```
 
-A suíte prepara clientes, motos, stock, processo com retoma, oficina, renting, encomenda, ausência, cheque e documento sintéticos. Testa criação, manifesto, checksums, documento, corrupção, path traversal, falha transacional/rollback, restauro confirmado, IDs/relações e bloqueio de utilizadores não autorizados.
+A suíte prepara clientes, motos, stock, processo com retoma, oficina, renting, encomenda, ausência, cheque e documento sintéticos. Testa criação, manifesto, checksums, documento, corrupção, path traversal, falha transacional/rollback, restauro confirmado, IDs/relações e bloqueio de utilizadores não autorizados. Inclui ainda permissões dependentes da Oficina e regressão do cheque: rejeição de moto pertencente a outro processo, fila idempotente e atualização válida.
 
 A suíte Playwright valida persistência após refresh, propagação cliente→oficina, permissões frontend/backend, conflito otimista entre duas sessões e coerência processo→stock→cliente→retoma.
 

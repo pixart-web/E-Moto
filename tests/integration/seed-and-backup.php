@@ -4,11 +4,14 @@ require '/var/www/html/api/bootstrap.php';
 require '/var/www/html/api/backup-lib.php';
 function ok(bool $condition,string $message):void{if(!$condition)throw new RuntimeException($message);echo "OK: {$message}\n";}
 $pdo->exec('SET FOREIGN_KEY_CHECKS=0');foreach(['cheque_notification_logs','scheduled_report_runs','email_report_recipients','process_documents','app_settings','user_sessions','password_reset_requests','login_attempts','users'] as $table)$pdo->exec("DELETE FROM `{$table}`");$pdo->exec('SET FOREIGN_KEY_CHECKS=1');
-$pdo->prepare('INSERT INTO users(id,name,username,email,password_hash,role,permissions,active) VALUES(1,?,?,?,?,?,?,1),(2,?,?,?,?,?,?,1)')->execute(['Admin Teste','admin_test','admin@example.invalid',password_hash('AuditTest!26',PASSWORD_DEFAULT),'admin',null,'Funcionário Teste','employee_test','employee@example.invalid',password_hash('AuditTest!26',PASSWORD_DEFAULT),'employee',json_encode(['dashboard','clientes','processos','motos','agenda'])]);
+$pdo->prepare('INSERT INTO users(id,name,username,email,password_hash,role,permissions,active) VALUES(1,?,?,?,?,?,?,1),(2,?,?,?,?,?,?,1),(3,?,?,?,?,?,?,1)')->execute(['Admin Teste','admin_test','admin@example.invalid',password_hash('AuditTest!26',PASSWORD_DEFAULT),'admin',null,'Funcionário Teste','employee_test','employee@example.invalid',password_hash('AuditTest!26',PASSWORD_DEFAULT),'employee',json_encode(['dashboard','clientes','processos','motos','agenda']),'Agenda Teste','agenda_test','agenda@example.invalid',password_hash('AuditTest!26',PASSWORD_DEFAULT),'employee',json_encode(['agenda'])]);
 $states=[
  'clients'=>[['id'=>100,'uid'=>'client-test-100','name'=>'Cliente Sintético','phone'=>'910000001','email'=>'client@example.invalid','nif'=>'000000000','bikes'=>[['brand'=>'CFMoto','model'=>'450MT','year'=>2026]]]],
  'processes'=>[['id'=>'MG-T001','uid'=>'process-test-1','clientId'=>100,'client'=>'Cliente Sintético','bike'=>'CFMoto 450MT','price'=>10000.25,'paid'=>2500.10,'tradeInValue'=>1500.15,'status'=>'Moto encomendada','stockBikeId'=>200]],
- 'stockBikes'=>[['id'=>200,'uid'=>'stock-test-200','brand'=>'CFMoto','model'=>'450MT','variant'=>'High Fender','status'=>'Em transporte','clientId'=>100,'processId'=>'MG-T001','chequeNumber'=>'TEST-001','chequeAmount'=>7000.00]],
+ 'stockBikes'=>[
+   ['id'=>200,'uid'=>'stock-test-200','brand'=>'CFMoto','model'=>'450MT','variant'=>'High Fender','status'=>'Em transporte','clientId'=>100,'processId'=>'MG-T001','processUid'=>'process-test-1','chequeNumber'=>'TEST-001','chequeAmount'=>7000.00],
+   ['id'=>201,'uid'=>'stock-test-201','brand'=>'CFMoto','model'=>'675NK','status'=>'Em transporte','processId'=>'MG-OUTRO','chequeNumber'=>'TEST-002','chequeAmount'=>8000.00],
+ ],
  'bookings'=>[['id'=>300,'uid'=>'booking-test-300','clientId'=>100,'client'=>'Cliente Sintético','bike'=>'CFMoto 450MT','date'=>'2026-11-02','time'=>'10:00','service'=>'Revisão sintética']],
  'officeBlocks'=>[], 'officeNotes'=>[['id'=>301,'uid'=>'note-test-301','date'=>'2026-11-02','text'=>'Nota sintética']],
  'testDrives'=>[['id'=>400,'uid'=>'agenda-test-400','type'=>'Renting','name'=>'Cliente Sintético','startDate'=>'2026-11-05','endDate'=>'2026-11-07','bike'=>'450MT']],

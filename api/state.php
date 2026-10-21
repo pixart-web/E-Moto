@@ -5,13 +5,30 @@ require __DIR__ . '/bootstrap.php';
 
 $user = require_user();
 $allowed = ['clients', 'processes', 'bookings', 'officeBlocks', 'officeNotes', 'testDrives', 'orders', 'stockBikes', 'absences', 'bikeCatalog'];
-$resourcePanels = ['clients'=>'clientes','processes'=>'processos','bookings'=>'agenda','officeBlocks'=>'agenda','officeNotes'=>'agenda','testDrives'=>'testdrives','orders'=>'encomendas','stockBikes'=>'motos','absences'=>'equipa','bikeCatalog'=>'catalogo'];
+$resourceWritePanels = [
+    'clients'=>['clientes','processos','agenda'],
+    'processes'=>['processos','financiamentos'],
+    'bookings'=>['agenda'], 'officeBlocks'=>['agenda'], 'officeNotes'=>['agenda'],
+    'testDrives'=>['testdrives'], 'orders'=>['encomendas'],
+    'stockBikes'=>['motos','processos','financiamentos'],
+    'absences'=>['equipa'], 'bikeCatalog'=>['catalogo'],
+];
+$resourceReadPanels = [
+    'clients'=>['clientes','processos','agenda','motos','financiamentos'],
+    'processes'=>['processos','financiamentos','contabilidade','motos'],
+    'bookings'=>['agenda','clientes'], 'officeBlocks'=>['agenda'], 'officeNotes'=>['agenda'],
+    'testDrives'=>['testdrives'], 'orders'=>['encomendas'],
+    'stockBikes'=>['motos','processos','financiamentos','contabilidade'],
+    'absences'=>['equipa'], 'bikeCatalog'=>['catalogo','motos','processos'],
+];
 $userPermissions = is_array($user['permissions'] ?? null) ? $user['permissions'] : [];
-$canAccess = static function (string $resource) use ($user, $userPermissions, $resourcePanels): bool {
+$hasResourcePermission = static function (string $resource, array $matrix) use ($user, $userPermissions): bool {
     if (in_array(($user['role'] ?? ''), ['admin','boss'], true)) return true;
     if (($user['role'] ?? '') !== 'employee') return false;
-    return in_array($resourcePanels[$resource] ?? '', $userPermissions, true);
+    return (bool)array_intersect($matrix[$resource] ?? [], $userPermissions);
 };
+$canAccess = static fn(string $resource): bool => $hasResourcePermission($resource, $resourceWritePanels);
+$canRead = static fn(string $resource): bool => $hasResourcePermission($resource, $resourceReadPanels);
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 $readResource = static function (PDO $pdo, string $resource, bool $forUpdate = false): array {
@@ -45,7 +62,7 @@ if ($method === 'GET') {
     foreach ($statement->fetchAll() as $row) {
         $key = substr($row['setting_key'], 6);
         if (in_array($key, $allowed, true)) $initialized = true;
-        if (in_array($key, $allowed, true) && $canAccess($key)) {
+        if (in_array($key, $allowed, true) && $canRead($key)) {
             $decoded = json_decode((string)$row['setting_value'], true);
             $decoded = is_array($decoded) ? $decoded : [];
             if ($key !== 'bikeCatalog') {
@@ -64,8 +81,10 @@ if ($method === 'GET') {
     if (!empty($state['clients'])) {
         $findClient = static function (array $record) use (&$state, $phoneKey, $nameKey): ?array {
             $recordId = (string)($record['clientId'] ?? '');
+            $recordUid = trim((string)($record['clientUid'] ?? ''));
             $recordPhone = $phoneKey($record['phone'] ?? '');
             foreach ($state['clients'] as $client) {
+                if ($recordUid !== '' && $recordUid === (string)($client['uid'] ?? '')) return $client;
                 if ($recordId !== '' && $recordId === (string)($client['id'] ?? '')) return $client;
                 $clientPhone = $phoneKey($client['phone'] ?? '');
                 if ($recordPhone !== '' && $recordPhone === $clientPhone) return $client;
@@ -74,19 +93,30 @@ if ($method === 'GET') {
         };
         foreach ($state['processes'] as &$process) {
             $client = $findClient($process);
-            if ($client) $process['clientId'] = $client['id'];
+            if ($client) {
+                $process['clientId'] = $client['id'];
+                if (!empty($client['uid'])) $process['clientUid'] = $client['uid'];
+            }
         }
         unset($process);
         foreach ($state['bookings'] as &$booking) {
             $client = $findClient($booking);
-            if ($client) $booking['clientId'] = $client['id'];
+            if ($client) {
+                $booking['clientId'] = $client['id'];
+                if (!empty($client['uid'])) $booking['clientUid'] = $client['uid'];
+            }
         }
         unset($booking);
         foreach ($state['stockBikes'] as &$bike) {
-            if (!empty($bike['processId'])) {
+            if (!empty($bike['processId']) || !empty($bike['processUid'])) {
                 foreach ($state['processes'] as $process) {
-                    if ((string)($process['id'] ?? '') === (string)$bike['processId'] && !empty($process['clientId'])) {
+                    $sameProcessUid = !empty($bike['processUid']) && (string)($process['uid'] ?? '') === (string)$bike['processUid'];
+                    $sameProcessId = !empty($bike['processId']) && (string)($process['id'] ?? '') === (string)$bike['processId'];
+                    if (($sameProcessUid || $sameProcessId) && !empty($process['clientId'])) {
+                        $bike['processId'] = $process['id'];
+                        if (!empty($process['uid'])) $bike['processUid'] = $process['uid'];
                         $bike['clientId'] = $process['clientId'];
+                        if (!empty($process['clientUid'])) $bike['clientUid'] = $process['clientUid'];
                         break;
                     }
                 }
