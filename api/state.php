@@ -4,8 +4,8 @@ declare(strict_types=1);
 require __DIR__ . '/bootstrap.php';
 
 $user = require_user();
-$allowed = ['clients', 'processes', 'bookings', 'officeBlocks', 'testDrives', 'orders', 'stockBikes', 'absences', 'bikeCatalog'];
-$resourcePanels = ['clients'=>'clientes','processes'=>'processos','bookings'=>'agenda','officeBlocks'=>'agenda','testDrives'=>'testdrives','orders'=>'encomendas','stockBikes'=>'motos','absences'=>'equipa','bikeCatalog'=>'catalogo'];
+$allowed = ['clients', 'processes', 'bookings', 'officeBlocks', 'officeNotes', 'testDrives', 'orders', 'stockBikes', 'absences', 'bikeCatalog'];
+$resourcePanels = ['clients'=>'clientes','processes'=>'processos','bookings'=>'agenda','officeBlocks'=>'agenda','officeNotes'=>'agenda','testDrives'=>'testdrives','orders'=>'encomendas','stockBikes'=>'motos','absences'=>'equipa','bikeCatalog'=>'catalogo'];
 $userPermissions = is_array($user['permissions'] ?? null) ? $user['permissions'] : [];
 $canAccess = static function (string $resource) use ($user, $userPermissions, $resourcePanels): bool {
     if (in_array(($user['role'] ?? ''), ['admin','boss'], true)) return true;
@@ -41,11 +41,19 @@ $freshProcessId = static function (array $records): string {
 if ($method === 'GET') {
     $statement = $pdo->query("SELECT setting_key, setting_value FROM app_settings WHERE setting_key LIKE 'state_%'");
     $state = array_fill_keys($allowed, []);
+    $initialized = false;
     foreach ($statement->fetchAll() as $row) {
         $key = substr($row['setting_key'], 6);
+        if (in_array($key, $allowed, true)) $initialized = true;
         if (in_array($key, $allowed, true) && $canAccess($key)) {
             $decoded = json_decode((string)$row['setting_value'], true);
             $decoded = is_array($decoded) ? $decoded : [];
+            if ($key !== 'bikeCatalog') {
+                foreach ($decoded as &$record) {
+                    if (is_array($record) && empty($record['_version'])) $record['_version'] = 1;
+                }
+                unset($record);
+            }
             if ($key === 'absences' && ($user['role'] ?? '') !== 'boss') {
                 $userName = trim((string)($user['name'] ?? ''));
                 $decoded = array_values(array_filter($decoded, static fn(array $absence): bool => trim((string)($absence['employee'] ?? '')) === $userName));
@@ -57,12 +65,10 @@ if ($method === 'GET') {
         $findClient = static function (array $record) use (&$state, $phoneKey, $nameKey): ?array {
             $recordId = (string)($record['clientId'] ?? '');
             $recordPhone = $phoneKey($record['phone'] ?? '');
-            $recordName = $nameKey($record['client'] ?? $record['name'] ?? '');
             foreach ($state['clients'] as $client) {
                 if ($recordId !== '' && $recordId === (string)($client['id'] ?? '')) return $client;
                 $clientPhone = $phoneKey($client['phone'] ?? '');
                 if ($recordPhone !== '' && $recordPhone === $clientPhone) return $client;
-                if ($recordName !== '' && $recordName === $nameKey($client['name'] ?? '') && ($recordPhone === '' || $clientPhone === '')) return $client;
             }
             return null;
         };
@@ -88,7 +94,7 @@ if ($method === 'GET') {
         }
         unset($bike);
     }
-    json_response(['ok' => true, 'initialized' => count($state) > 0, 'state' => $state]);
+    json_response(['ok' => true, 'initialized' => $initialized, 'state' => $state]);
 }
 
 if ($method === 'PUT') {
@@ -96,6 +102,7 @@ if ($method === 'PUT') {
     verify_csrf($input);
     $resource = (string)($input['resource'] ?? '');
     $data = $input['data'] ?? null;
+    $partial = !empty($input['partial']);
     if (!in_array($resource, $allowed, true) || !is_array($data)) {
         json_response(['ok' => false, 'error' => 'Recurso inválido.'], 422);
     }
@@ -114,29 +121,39 @@ if ($method === 'PUT') {
     }
     $pdo->beginTransaction();
     try {
-        if (in_array($resource, ['clients','bookings','officeBlocks','testDrives','processes','orders','stockBikes','absences'], true)) {
+        if (in_array($resource, ['clients','bookings','officeBlocks','officeNotes','testDrives','processes','orders','stockBikes','absences'], true)) {
             $existing = $readResource($pdo, $resource, true);
+            $tombstoneKey = 'state_deleted_' . $resource;
+            $tombstoneStatement = $pdo->prepare('SELECT setting_value FROM app_settings WHERE setting_key = ? LIMIT 1 FOR UPDATE');
+            $tombstoneStatement->execute([$tombstoneKey]);
+            $tombstones = json_decode((string)($tombstoneStatement->fetchColumn() ?: '[]'), true);
+            $tombstones = is_array($tombstones) ? $tombstones : [];
             foreach ($data as $incoming) {
                 if (!is_array($incoming)) continue;
+                $incomingUid = trim((string)($incoming['uid'] ?? ''));
+                $incomingId = trim((string)($incoming['id'] ?? ''));
+                $wasDeleted = false;
+                foreach ($tombstones as $deleted) {
+                    if (($incomingUid !== '' && $incomingUid === (string)($deleted['uid'] ?? '')) || ($incomingUid === '' && $incomingId !== '' && $incomingId === (string)($deleted['id'] ?? ''))) {
+                        $wasDeleted = true;
+                        break;
+                    }
+                }
+                if ($wasDeleted) continue;
                 $match = null;
                 foreach ($existing as $index => $stored) {
                     if (!is_array($stored)) continue;
-                    $incomingUid = trim((string)($incoming['uid'] ?? ''));
                     $storedUid = trim((string)($stored['uid'] ?? ''));
                     if ($incomingUid !== '' && $incomingUid === $storedUid) { $match = $index; break; }
                     if ($resource === 'clients') {
                         $incomingPhone = $phoneKey($incoming['phone'] ?? '');
                         $storedPhone = $phoneKey($stored['phone'] ?? '');
                         $samePhone = $incomingPhone !== '' && $incomingPhone === $storedPhone;
-                        $sameIdentity = $nameKey($incoming['name'] ?? '') === $nameKey($stored['name'] ?? '') && (!$incomingPhone || !$storedPhone || $samePhone);
-                        if ($samePhone || $sameIdentity) { $match = $index; break; }
+                        $sameId = (string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '');
+                        if ($samePhone || $sameId) { $match = $index; break; }
                     } elseif ($resource === 'bookings') {
                         $sameId = (string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '');
-                        $sameBooking = $nameKey($incoming['client'] ?? '') === $nameKey($stored['client'] ?? '')
-                            && (string)($incoming['date'] ?? '') === (string)($stored['date'] ?? '')
-                            && (string)($incoming['time'] ?? '') === (string)($stored['time'] ?? '')
-                            && $nameKey($incoming['service'] ?? '') === $nameKey($stored['service'] ?? '');
-                        if ($sameId || $sameBooking) { $match = $index; break; }
+                        if ($sameId) { $match = $index; break; }
                     } elseif ($resource === 'testDrives') {
                         $sameId = (string)($incoming['id'] ?? '') !== '' && (string)($incoming['id'] ?? '') === (string)($stored['id'] ?? '');
                         if ($sameId) { $match = $index; break; }
@@ -152,6 +169,16 @@ if ($method === 'PUT') {
                     }
                 }
                 if ($match !== null) {
+                    $storedVersion = max(1, (int)($existing[$match]['_version'] ?? 1));
+                    $incomingVersion = max(1, (int)($incoming['_version'] ?? 1));
+                    if ($partial && $incomingVersion !== $storedVersion) {
+                        $storedComparable = $existing[$match];
+                        $incomingComparable = array_replace($existing[$match], $incoming);
+                        unset($storedComparable['_version'], $incomingComparable['_version']);
+                        if ($storedComparable === $incomingComparable) continue;
+                        $pdo->rollBack();
+                        json_response(['ok' => false, 'error' => 'Este registo foi alterado por outro utilizador. Atualize a página antes de repetir.', 'resource' => $resource], 409);
+                    }
                     if (isset($existing[$match]['id'])) $incoming['id'] = $existing[$match]['id'];
                     if (!empty($existing[$match]['uid'])) $incoming['uid'] = $existing[$match]['uid'];
                     if ($resource === 'stockBikes') {
@@ -164,6 +191,7 @@ if ($method === 'PUT') {
                             }
                         }
                     }
+                    $incoming['_version'] = $storedVersion + 1;
                     $existing[$match] = array_replace($existing[$match], $incoming);
                     continue;
                 }
@@ -173,6 +201,7 @@ if ($method === 'PUT') {
                 }
                 if ($idCollision || !isset($incoming['id'])) $incoming['id'] = $resource === 'processes' ? $freshProcessId($existing) : $freshId();
                 if (empty($incoming['uid'])) $incoming['uid'] = rtrim($resource, 's') . '-' . bin2hex(random_bytes(12));
+                $incoming['_version'] = 1;
                 $existing[] = $incoming;
             }
             $data = array_values($existing);
@@ -181,12 +210,9 @@ if ($method === 'PUT') {
             $serverClients = $readResource($pdo, 'clients');
             foreach ($data as &$booking) {
                 $bookingPhone = $phoneKey($booking['phone'] ?? '');
-                $bookingName = $nameKey($booking['client'] ?? '');
                 foreach ($serverClients as $client) {
                     $samePhone = $bookingPhone !== '' && $bookingPhone === $phoneKey($client['phone'] ?? '');
-                    $clientPhone = $phoneKey($client['phone'] ?? '');
-                    $sameName = $bookingName !== '' && $bookingName === $nameKey($client['name'] ?? '') && ($bookingPhone === '' || $clientPhone === '');
-                    if ($samePhone || $sameName) { $booking['clientId'] = $client['id']; break; }
+                    if ($samePhone) { $booking['clientId'] = $client['id']; break; }
                 }
             }
             unset($booking);
@@ -208,11 +234,19 @@ if ($method === 'DELETE') {
     $resource = (string)($input['resource'] ?? '');
     $id = (string)($input['id'] ?? '');
     $uid = trim((string)($input['uid'] ?? ''));
-    if (!in_array($resource, ['clients','bookings','officeBlocks','testDrives','processes','orders','stockBikes','absences'], true) || $id === '') json_response(['ok' => false, 'error' => 'Pedido inválido.'], 422);
+    $version = max(1, (int)($input['version'] ?? 1));
+    if (!in_array($resource, ['clients','bookings','officeBlocks','officeNotes','testDrives','processes','orders','stockBikes','absences'], true) || $id === '') json_response(['ok' => false,'error' => 'Pedido inválido.'], 422);
     if (!$canAccess($resource)) json_response(['ok' => false, 'error' => 'Sem permissão para alterar este módulo.'], 403);
     $pdo->beginTransaction();
     try {
         $data = $readResource($pdo, $resource, true);
+        foreach ($data as $item) {
+            $isTarget = $uid !== '' ? (string)($item['uid'] ?? '') === $uid : (string)($item['id'] ?? '') === $id;
+            if ($isTarget && max(1, (int)($item['_version'] ?? 1)) !== $version) {
+                $pdo->rollBack();
+                json_response(['ok' => false, 'error' => 'Este registo foi alterado por outro utilizador. Atualize antes de eliminar.'], 409);
+            }
+        }
         if ($resource === 'absences' && ($user['role'] ?? '') !== 'boss') {
             $userName = trim((string)($user['name'] ?? ''));
             foreach ($data as $item) {
@@ -227,6 +261,15 @@ if ($method === 'DELETE') {
             if ($uid !== '') return (string)($item['uid'] ?? '') !== $uid;
             return (string)($item['id'] ?? '') !== $id;
         }));
+        $tombstoneKey = 'state_deleted_' . $resource;
+        $tombstoneStatement = $pdo->prepare('SELECT setting_value FROM app_settings WHERE setting_key = ? LIMIT 1 FOR UPDATE');
+        $tombstoneStatement->execute([$tombstoneKey]);
+        $tombstones = json_decode((string)($tombstoneStatement->fetchColumn() ?: '[]'), true);
+        $tombstones = is_array($tombstones) ? $tombstones : [];
+        $tombstones[] = ['id' => $id, 'uid' => $uid, 'deletedAt' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM), 'deletedBy' => $user['id']];
+        $tombstones = array_slice($tombstones, -2000);
+        $saveTombstones = $pdo->prepare('INSERT INTO app_settings (setting_key, setting_value, updated_by) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_by = VALUES(updated_by)');
+        $saveTombstones->execute([$tombstoneKey, json_encode($tombstones, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR), $user['id']]);
         $encoded = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         $statement = $pdo->prepare('INSERT INTO app_settings (setting_key, setting_value, updated_by) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_by = VALUES(updated_by)');
         $statement->execute(['state_' . $resource, $encoded, $user['id']]);
@@ -235,7 +278,7 @@ if ($method === 'DELETE') {
         if ($pdo->inTransaction()) $pdo->rollBack();
         throw $error;
     }
-    json_response(['ok' => true, 'resource' => $resource]);
+    json_response(['ok' => true, 'resource' => $resource, 'data' => $data]);
 }
 
 json_response(['ok' => false, 'error' => 'Método não permitido.'], 405);

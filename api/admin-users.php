@@ -71,6 +71,7 @@ try {
         $sql .= ' WHERE id = ?';
         $parameters[] = $id;
         $pdo->prepare($sql)->execute($parameters);
+        if ($password !== '') $pdo->prepare('DELETE FROM user_sessions WHERE user_id = ?')->execute([$id]);
         json_response(['ok' => true, 'message' => 'Utilizador atualizado com sucesso.']);
     }
 } catch (PDOException $exception) {

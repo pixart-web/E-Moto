@@ -11,14 +11,7 @@ require dirname(__DIR__) . '/api/smtp-lib.php';
 
 $isTest = in_array('--test', $argv ?? [], true);
 $pickupDate = (new DateTimeImmutable('today'))->modify('+2 days')->format('Y-m-d');
-$reportType = $isTest ? 'renting_reminder_test' : 'renting_reminder';
 $recipient = 'l.dalogli@motogreen.pt';
-
-if (!$isTest) {
-    $alreadySent = $pdo->prepare("SELECT COUNT(*) FROM scheduled_report_runs WHERE report_date = ? AND report_type = 'renting_reminder' AND status = 'sent'");
-    $alreadySent->execute([$pickupDate]);
-    if ((int)$alreadySent->fetchColumn() > 0) exit("Aviso da Agenda já enviado para {$pickupDate}.\n");
-}
 
 $statement = $pdo->prepare("SELECT setting_value FROM app_settings WHERE setting_key = 'state_testDrives' LIMIT 1");
 $statement->execute();
@@ -30,6 +23,16 @@ $rentings = array_values(array_filter($appointments, static function ($item) use
     $startDate = $type === 'event' ? ($item['eventStartDate'] ?? $item['date'] ?? '') : ($item['pickupDate'] ?? $item['date'] ?? '');
     return in_array($type, ['renting', 'event'], true) && $startDate === $pickupDate;
 }));
+
+if (!$isTest && $rentings) {
+    $alreadySent = $pdo->prepare("SELECT COUNT(*) FROM scheduled_report_runs WHERE report_date = ? AND report_type = ? AND status = 'sent'");
+    $rentings = array_values(array_filter($rentings, static function (array $item) use ($alreadySent, $pickupDate): bool {
+        $identity = (string)($item['uid'] ?? $item['id'] ?? '');
+        $type = 'agenda_reminder_' . substr(hash('sha256', $identity), 0, 24);
+        $alreadySent->execute([$pickupDate, $type]);
+        return (int)$alreadySent->fetchColumn() === 0;
+    }));
+}
 
 if (!$rentings) exit("Sem rentings ou eventos para avisar em {$pickupDate}.\n");
 
@@ -68,6 +71,10 @@ try {
 }
 
 $log = $pdo->prepare('INSERT INTO scheduled_report_runs (report_date, report_type, status, recipients, error_message, sent_at) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE status=VALUES(status), recipients=VALUES(recipients), error_message=VALUES(error_message), sent_at=VALUES(sent_at)');
-$log->execute([$pickupDate, $reportType, $status, $recipient, $error, $status === 'sent' ? date('Y-m-d H:i:s') : null]);
+foreach ($rentings as $item) {
+    $identity = (string)($item['uid'] ?? $item['id'] ?? '');
+    $reportType = ($isTest ? 'agenda_test_' : 'agenda_reminder_') . substr(hash('sha256', $identity), 0, 24);
+    $log->execute([$pickupDate, $reportType, $status, $recipient, $error, $status === 'sent' ? date('Y-m-d H:i:s') : null]);
+}
 if ($error !== null) throw new RuntimeException($error);
 echo "Aviso da Agenda enviado para {$recipient} ({$pickupDate}).\n";

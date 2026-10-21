@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">E-Motogreen</string>
+    <string name="welcome">La tua officina, il team e le operazioni sempre sincronizzati.</string>
+    <string name="choose_access">Dove vuoi entrare?</string>
+    <string name="choose_access_help">Scegli un’area per continuare.</string>
+    <string name="language">Lingua</string>
+    <string name="platform">Piattaforma</string>
+    <string name="platform_help">Accesso completo al CRM</string>
+    <string name="live_agenda">Agenda Live</string>
+    <string name="live_agenda_help">Vista in tempo reale dell’officina</string>
+    <string name="home">Home</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="back">Indietro</string>
+    <string name="secure_access">Connessione sicura e sincronizzata</string>
+    <string name="tablet_ready">Progettato per il lavoro quotidiano su tablet</string>
+</resources>

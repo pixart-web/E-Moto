@@ -2,8 +2,11 @@
 declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
-require __DIR__ . '/smtp-lib.php';
 $user = require_user();
+$permissions = is_array($user['permissions'] ?? null) ? $user['permissions'] : [];
+if (!in_array(($user['role'] ?? ''), ['admin','boss'], true) && !array_intersect(['processos','contabilidade'], $permissions)) {
+    json_response(['ok'=>false,'error'=>'Sem permissão para alterar cheques.'],403);
+}
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') json_response(['ok'=>false,'error'=>'Método não permitido.'],405);
 $input = json_input(); verify_csrf($input);
 $processId = trim((string)($input['processId'] ?? ''));
@@ -26,9 +29,28 @@ $state['stockBikes'][$bikeIndex]['chequeStateUpdatedAt']=$chequeStateUpdatedAt;
 $state['stockBikes'][$bikeIndex]['chequeNotificationPending']=true;
 $saveState=$pdo->prepare("INSERT INTO app_settings(setting_key,setting_value) VALUES('state_stockBikes',?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)");
 $saveState->execute([json_encode($state['stockBikes'],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)]);
-$e=static fn($v)=>htmlspecialchars((string)$v,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');
-$subject='Cheque '.$bike['chequeNumber'].' a vencer no dia útil seguinte';
-$html='<html><body style="font-family:Arial,sans-serif;color:#173027"><h2>Cobrança de cheque a vencer</h2><p>Foi pedida a matrícula. O cheque número <b>'.$e($bike['chequeNumber']).'</b>, associado à encomenda <b>'.$e($bike['reference']??'').'</b>, vai vencer no dia útil seguinte: <b>'.$e($nextBusinessDay->format('d/m/Y')).'</b>.</p><p><b>Moto:</b> '.$e(($bike['brand']??'').' '.($bike['model']??'')).'<br><b>Cliente:</b> '.$e($process['client']??'').'<br><b>Processo:</b> '.$e($processId).'<br><b>Prazo original:</b> '.$e($bike['chequeTerm']??0).' dias<br><b>Nova data de vencimento:</b> '.$e($nextBusinessDay->format('d/m/Y')).'</p><p>Na Contabilidade, o cheque passa para o estado <b>A vencer</b>. Depois da data indicada, passa automaticamente para <b>Vencido</b>.</p></body></html>';
-try{smtp_send_html($config,['contabilidade@motogreen.pt'],$subject,$html);$status='sent';$error=null;$state['stockBikes'][$bikeIndex]['chequeCollectedEarly']=true;$state['stockBikes'][$bikeIndex]['chequeNotificationPending']=false;unset($state['stockBikes'][$bikeIndex]['chequeNotificationError']);$saveState->execute([json_encode($state['stockBikes'],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)]);}catch(Throwable $exception){$status='failed';$error=$exception->getMessage();$state['stockBikes'][$bikeIndex]['chequeCollectedEarly']=false;$state['stockBikes'][$bikeIndex]['chequeNotificationError']=$error;$saveState->execute([json_encode($state['stockBikes'],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)]);}
-try{$log=$pdo->prepare("INSERT INTO cheque_notification_logs(stock_id,process_id,cheque_number,notification_type,status,error_message,sent_by,sent_at) VALUES(?,?,?,'early_collection',?,?,?,?)");$log->execute([$stockId,$processId,$bike['chequeNumber'],$status,$error,$user['id'],$status==='sent'?date('Y-m-d H:i:s'):null]);}catch(Throwable $logError){error_log('E-Motogreen cheque log: '.$logError->getMessage());}
-if($error)json_response(['ok'=>false,'error'=>$error,'dueDate'=>$dueDate,'chequeStateUpdatedAt'=>$chequeStateUpdatedAt],502);json_response(['ok'=>true,'status'=>'sent','dueDate'=>$dueDate,'chequeStateUpdatedAt'=>$chequeStateUpdatedAt]);
+$queueStatement=$pdo->prepare("SELECT setting_value FROM app_settings WHERE setting_key='state_chequeEmailQueue' LIMIT 1");
+$queueStatement->execute();
+$queue=json_decode((string)($queueStatement->fetchColumn()?:'[]'),true);
+$queue=is_array($queue)?$queue:[];
+$queue[]= [
+    'id'=>bin2hex(random_bytes(16)),
+    'status'=>'pending',
+    'stockId'=>(string)($bike['id']??$stockId),
+    'processId'=>$processId,
+    'chequeNumber'=>(string)$bike['chequeNumber'],
+    'chequeAmount'=>(float)($bike['chequeAmount']??0),
+    'reference'=>(string)($bike['reference']??$bike['invoiceNumber']??''),
+    'brand'=>(string)($bike['brand']??''),
+    'model'=>(string)($bike['model']??''),
+    'client'=>(string)($process['client']??''),
+    'chequeTerm'=>(int)($bike['chequeTerm']??0),
+    'dueDate'=>$dueDate,
+    'createdAt'=>$chequeStateUpdatedAt,
+    'attempts'=>0
+];
+$queue=array_slice($queue,-500);
+$saveQueue=$pdo->prepare("INSERT INTO app_settings(setting_key,setting_value) VALUES('state_chequeEmailQueue',?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)");
+$saveQueue->execute([json_encode($queue,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)]);
+try{$log=$pdo->prepare("INSERT INTO cheque_notification_logs(stock_id,process_id,cheque_number,notification_type,status,error_message,sent_by,sent_at) VALUES(?,?,?,'early_collection','queued',NULL,?,NULL)");$log->execute([$stockId,$processId,$bike['chequeNumber'],$user['id']]);}catch(Throwable $logError){error_log('E-Motogreen cheque queue log: '.$logError->getMessage());}
+json_response(['ok'=>true,'status'=>'queued','dueDate'=>$dueDate,'chequeStateUpdatedAt'=>$chequeStateUpdatedAt]);

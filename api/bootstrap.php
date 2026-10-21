@@ -8,7 +8,16 @@ function json_response(array $data, int $status = 200): never {
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
+if (PHP_SAPI !== 'cli') {
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: DENY');
+    header('Referrer-Policy: same-origin');
+    header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+}
 function json_input(): array {
+    if (isset($GLOBALS['emotogreen_json_input_override']) && is_array($GLOBALS['emotogreen_json_input_override'])) {
+        return $GLOBALS['emotogreen_json_input_override'];
+    }
     try { $input = json_decode(file_get_contents('php://input') ?: '{}', true, 512, JSON_THROW_ON_ERROR); }
     catch (JsonException) { json_response(['ok'=>false,'error'=>'JSON inválido.'],400); }
     if (!is_array($input)) json_response(['ok'=>false,'error'=>'Pedido inválido.'],400);

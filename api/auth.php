@@ -36,13 +36,28 @@ if ($method === 'POST') {
     $input = json_input();
     $username = trim((string)($input['username'] ?? ''));
     $password = (string)($input['password'] ?? '');
+    $ip = substr((string)($_SERVER['REMOTE_ADDR'] ?? ''), 0, 45);
+    $rateLimitAvailable = true;
+    try {
+        $pdo->exec('DELETE FROM login_attempts WHERE attempted_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)');
+        $attempts = $pdo->prepare('SELECT COUNT(*) FROM login_attempts WHERE attempted_at >= DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND (ip_address = ? OR LOWER(username) = LOWER(?))');
+        $attempts->execute([$ip, $username]);
+        if ((int)$attempts->fetchColumn() >= 10) {
+            json_response(['ok' => false, 'error' => 'Demasiadas tentativas. Aguarde 15 minutos antes de tentar novamente.'], 429);
+        }
+    } catch (PDOException $error) {
+        $rateLimitAvailable = false;
+        error_log('E-Motogreen: execute database/update-audit-hardening.sql para ativar a proteção de login.');
+    }
     $statement = $pdo->prepare('SELECT id, name, username, email, password_hash, role, permissions, active FROM users WHERE LOWER(username) = LOWER(?) LIMIT 1');
     $statement->execute([$username]);
     $user = $statement->fetch();
     if (!$user || !$user['active'] || !password_verify($password, $user['password_hash'])) {
+        if ($rateLimitAvailable) $pdo->prepare('INSERT INTO login_attempts (username, ip_address) VALUES (?, ?)')->execute([$username, $ip]);
         usleep(250000);
         json_response(['ok' => false, 'error' => 'Utilizador ou palavra-passe incorretos.'], 401);
     }
+    if ($rateLimitAvailable) $pdo->prepare('DELETE FROM login_attempts WHERE ip_address = ? OR LOWER(username) = LOWER(?) OR attempted_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)')->execute([$ip, $username]);
     session_regenerate_id(true);
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
     $_SESSION['user'] = [
@@ -81,6 +96,12 @@ if ($method === 'PUT') {
     }
     $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
     $pdo->prepare('UPDATE users SET password_hash = ?, updated_at = NOW() WHERE id = ?')->execute([$newHash, $user['id']]);
+    $currentToken = request_session_token();
+    if ($currentToken !== '') {
+        $pdo->prepare('DELETE FROM user_sessions WHERE user_id = ? AND token_hash <> ?')->execute([$user['id'], hash('sha256', $currentToken)]);
+    } else {
+        $pdo->prepare('DELETE FROM user_sessions WHERE user_id = ?')->execute([$user['id']]);
+    }
     json_response(['ok' => true, 'message' => 'Password alterada com sucesso.']);
 }
 

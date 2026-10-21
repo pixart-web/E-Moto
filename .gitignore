@@ -9,3 +9,10 @@ uploads/
 .DS_Store
 Thumbs.db
 
+# Android/Gradle local and generated files
+android-app/.gradle/
+android-app/**/.gradle/
+android-app/.idea/
+android-app/**/.idea/
+android-app/**/local.properties
+android-app/**/build/
