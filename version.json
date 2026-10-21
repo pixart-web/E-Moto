@@ -1,6 +1,6 @@
 {
   "application": "E-Motogreen",
-  "version": "2026.10.21.47",
+  "version": "2026.10.21.48",
   "releasedAt": "2026-10-19T12:00:00+01:00",
   "features": [
     "oficina-ate-20h",
@@ -74,6 +74,7 @@
     "clientes-processos-confirmacao-servidor",
     "fila-local-recuperacao-sincronizacao",
     "encomendas-exportacao-pdf-financeira",
-    "retoma-gravada-e-deduzida-processo"
+    "retoma-gravada-e-deduzida-processo",
+    "legenda-retoma-apenas-quando-aplicavel"
   ]
 }
