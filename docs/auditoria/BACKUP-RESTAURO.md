@@ -23,3 +23,7 @@ Configurar `backups.retention_count` no `private/config.php`. A retenção nunca
 Sem `--confirm=RESTORE`, a ferramenta apenas valida e mostra o plano. Com confirmação, cria primeiro um backup `pre-restauro`, usa staging para documentos, transação para dados e valida contagens. Deve ser testada numa instalação isolada antes de qualquer uso em produção.
 
 Não são incluídos segredos. Numa recuperação total, recriar `private/config.php` por canal seguro.
+
+## Teste isolado
+
+Instalar/iniciar Docker Desktop com contentores Linux e executar os três comandos da secção Docker em `TESTES-REGRESSAO.md`. Todos os dados, emails, passwords e documentos definidos em `tests/integration/` são artificiais. O comando final `down -v` elimina os volumes de teste.

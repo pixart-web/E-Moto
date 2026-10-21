@@ -24,3 +24,7 @@ Branch: `audit/emoto-integrity-backup`. Base auditada: `f7ac2e0`. A produção e
 | AUD-007 | Alta | Roles desconhecidos recebiam acesso visual a todos os painéis exceto Admin | Corrigido para negar acesso por omissão |
 
 Não foi encontrada evidência suficiente para declarar cobertura integral ou ausência de bugs.
+
+## Estado do ambiente de validação
+
+Foi preparado Docker Compose isolado com PHP 8.2 e MariaDB 11.4. A máquina possui apenas a CLI Docker 29.7.2; o motor não está em execução e o executável do Docker Desktop não foi encontrado nos caminhos de instalação habituais. A suíte está pronta, mas ainda não produziu evidência de execução real.

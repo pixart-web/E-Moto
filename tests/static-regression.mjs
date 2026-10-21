@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 const app=read('app.js'),state=read('api/state.php'),backup=read('api/backup-lib.php'),admin=read('api/admin-users.php');
+const android=read('android-app/app/src/main/java/pt/motogreen/emoto/MainActivity.java');
 assert.match(app,/const processOutstanding = process =>[^\r\n]*processTradeInValue\(process\)/,'retoma deve abater à dívida');
 assert.match(state,/FOR UPDATE/,'escritas devem bloquear o snapshot');
 assert.match(state,/state_deleted_/,'eliminações devem criar tombstones');
@@ -11,4 +12,6 @@ assert.match(backup,/dirname\(__DIR__, 2\).*e-motogreen-backups/,'backup deve fi
 assert.match(admin,/contabilidade/,'contabilidade deve ser uma permissão atribuível');
 assert.match(app,/currentUser\?\.role!=='employee'\)return false/,'roles desconhecidos não podem obter acesso por omissão');
 assert.doesNotMatch(read('private/config.example.php'),/Motogreen\.\d+|OuOnjUs/,'exemplo não pode conter passwords reais');
+assert.match(android,/e-moto\.motogreen\.pt/,'Android deve continuar ligado ao domínio E-Moto');
+assert.match(read('android-app/app/src/main/res/values-it/strings.xml'),/<resources>/,'recursos italianos devem existir');
 console.log('Static regression checks: OK');
