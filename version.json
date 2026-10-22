@@ -1,7 +1,7 @@
 {
   "application": "E-Motogreen",
-  "version": "2026.10.21.49-audit",
-  "releasedAt": "2026-10-19T12:00:00+01:00",
+  "version": "2026.10.22.50-audit",
+  "releasedAt": "2026-10-22T12:00:00+01:00",
   "features": [
     "oficina-ate-20h",
     "processos-entregues-no-historico",
@@ -79,6 +79,11 @@
     "backups-zip-manifesto-checksums",
     "backups-historico-download-admin",
     "restauro-cli-validado-com-backup-seguranca",
-    "permissao-contabilidade-atribuivel"
+    "permissao-contabilidade-atribuivel",
+    "cheque-validado-contra-processo",
+    "fila-cheques-transacional-idempotente",
+    "relacoes-estaveis-por-uid",
+    "retoma-apenas-no-processo-criado",
+    "processos-legados-sem-dupla-soma-acessorios"
   ]
 }
