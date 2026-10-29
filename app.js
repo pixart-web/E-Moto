@@ -9,6 +9,19 @@ const processTradeInValue = process => {
 const processOutstanding = process => Math.max(0,processTotal(process)-(Number(process?.paid)||0)-processTradeInValue(process));
 const initials = name => name.split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase();
 const htmlEscape=value=>String(value??'').replace(/[&<>"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char]));
+const themeStorageKey='emg-interface-theme';
+function applyInterfaceTheme(theme){
+ const selected=theme==='dark'?'dark':'light',toggle=document.querySelector('#themeToggle'),meta=document.querySelector('meta[name="theme-color"]');
+ document.documentElement.dataset.theme=selected;
+ localStorage.setItem(themeStorageKey,selected);
+ if(meta)meta.content=selected==='dark'?'#101714':'#f7f9f8';
+ if(toggle){const label=selected==='dark'?'Ativar tema claro':'Ativar tema escuro';toggle.setAttribute('aria-label',label);toggle.title=label;toggle.setAttribute('aria-pressed',String(selected==='dark'))}
+}
+function initializeInterfaceTheme(){
+ const saved=localStorage.getItem(themeStorageKey),preferred=window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light';
+ applyInterfaceTheme(saved||preferred);
+ document.querySelector('#themeToggle')?.addEventListener('click',()=>applyInterfaceTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+}
 document.querySelector('#currentDate').textContent=new Intl.DateTimeFormat('pt-PT',{day:'2-digit',month:'short',year:'numeric',timeZone:'Europe/Lisbon'}).format(new Date());
 const panelDefinitions=[['dashboard','Visão geral'],['processos','Processos'],['clientes','Clientes'],['motos','Stock'],['catalogo','Catálogo'],['encomendas','Encomendas'],['contabilidade','Contabilidade'],['agenda','Oficina'],['testdrives','Agenda'],['financiamentos','Financiamentos'],['equipa','Equipa & férias']];
 const allPanelKeys=panelDefinitions.map(([key])=>key);
@@ -307,13 +320,15 @@ function processRows(items=processes.slice(0,4)){
 }
 function pageHead(eyebrow,title,sub,actions=''){if(title==='Motos & stock')title='Stock';return `<div class="page-head"><div><span class="eyebrow">${eyebrow}</span><h1>${title}</h1><p class="subtext">${sub}</p></div><div class="head-actions">${actions}</div></div>`}
 function dashboard(){
- const pending=processes.reduce((a,p)=>a+processOutstanding(p),0),today=isoDate(new Date()),todayBookings=bookings.filter(b=>b.date===today).sort((a,b)=>a.time.localeCompare(b.time)),weekStart=mondayOf(new Date()),weekStartIso=isoDate(weekStart),weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+6);const weekEndIso=isoDate(weekEnd),deliveriesThisWeek=processes.filter(p=>p.status==='Entregue'&&String(p.deliveredAt||'').slice(0,10)>=weekStartIso&&String(p.deliveredAt||'').slice(0,10)<=weekEndIso).length,ready=processes.filter(p=>p.status==='Pronta para entrega').length,officeMinutes=todayBookings.reduce((sum,b)=>sum+Number(b.duration||0),0),officeOccupancy=Math.min(100,Math.round(officeMinutes/(9*60)*100)),createdThisWeek=processes.filter(p=>{const created=String(p.createdAt||'').slice(0,10);return created>=weekStartIso&&created<=weekEndIso}).length;
- view.innerHTML=pageHead(`OLÁ, ${(currentUser?.username||'UTILIZADOR').toUpperCase()}`,'Visão geral','Aqui está o ponto de situação da Motogreen.','<button class="btn ghost">Exportar</button><button class="btn primary new-process">＋ Novo processo</button>')+`
- <section class="stats-grid">
-  <article class="stat-card"><div class="stat-top"><span>Processos ativos</span><span class="stat-icon">◆</span></div><div class="stat-value">${processes.filter(p=>!['Entregue','Cancelado'].includes(p.status)).length}</div><span class="trend neutral">${createdThisWeek} criados esta semana</span></article>
-  <article class="stat-card"><div class="stat-top"><span>Valor em processos</span><span class="stat-icon">€</span></div><div class="stat-value">${euros(processes.reduce((a,p)=>a+processTotal(p),0))}</div><span class="trend neutral">${euros(pending)} por receber</span></article>
-  <article class="stat-card"><div class="stat-top"><span>Entregas esta semana</span><span class="stat-icon">↗</span></div><div class="stat-value">${deliveriesThisWeek}</div><span class="trend neutral">${ready} prontas para entrega</span></article>
+ const pending=processes.reduce((a,p)=>a+processOutstanding(p),0),today=isoDate(new Date()),todayBookings=bookings.filter(b=>b.date===today).sort((a,b)=>a.time.localeCompare(b.time)),weekStart=mondayOf(new Date()),weekStartIso=isoDate(weekStart),weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+6);const weekEndIso=isoDate(weekEnd),deliveriesThisWeek=processes.filter(p=>p.status==='Entregue'&&String(p.deliveredAt||'').slice(0,10)>=weekStartIso&&String(p.deliveredAt||'').slice(0,10)<=weekEndIso).length,ready=processes.filter(p=>p.status==='Pronta para entrega').length,officeMinutes=todayBookings.reduce((sum,b)=>sum+Number(b.duration||0),0),officeOccupancy=Math.min(100,Math.round(officeMinutes/(9*60)*100)),createdThisWeek=processes.filter(p=>{const created=String(p.createdAt||'').slice(0,10);return created>=weekStartIso&&created<=weekEndIso}).length,activeProcesses=processes.filter(p=>!['Entregue','Cancelado'].includes(p.status)).length,activeStock=stockBikes.filter(item=>item.status!=='Entregue').length,pendingOrders=orders.filter(item=>!['Enviada','Cancelada','Concluída'].includes(item.status)).length,displayName=currentUser?.username||currentUser?.name||'Utilizador';
+ view.innerHTML=`<section class="dashboard-hero"><div class="dashboard-hero-copy"><span class="dashboard-kicker">MOTOGREEN / E-MOTOGREEN</span><h1>Bom dia, ${htmlEscape(displayName)}.</h1><p>Aqui tens o resumo da atividade de hoje.</p></div><div class="dashboard-hero-actions"><button class="btn hero-secondary" type="button" data-go="agenda">Ver oficina</button><button class="btn hero-primary new-process" type="button">＋ Novo processo</button></div></section>
+ <section class="stats-grid dashboard-stats">
+  <article class="stat-card"><div class="stat-top"><span>Processos ativos</span><span class="stat-icon">◆</span></div><div class="stat-value">${activeProcesses}</div><span class="trend neutral">${createdThisWeek} criados esta semana</span></article>
+  <article class="stat-card"><div class="stat-top"><span>Motos em stock</span><span class="stat-icon">◇</span></div><div class="stat-value">${activeStock}</div><span class="trend neutral">Disponíveis e reservadas</span></article>
   <article class="stat-card"><div class="stat-top"><span>Oficina hoje</span><span class="stat-icon">□</span></div><div class="stat-value">${todayBookings.length}</div><span class="trend neutral">${officeOccupancy}% de ocupação</span></article>
+  <article class="stat-card"><div class="stat-top"><span>Entregas esta semana</span><span class="stat-icon">↗</span></div><div class="stat-value">${deliveriesThisWeek}</div><span class="trend neutral">${ready} prontas para entrega</span></article>
+  <article class="stat-card"><div class="stat-top"><span>Encomendas</span><span class="stat-icon">▣</span></div><div class="stat-value">${pendingOrders}</div><span class="trend neutral">Pendentes de conclusão</span></article>
+  <article class="stat-card"><div class="stat-top"><span>Por receber</span><span class="stat-icon">€</span></div><div class="stat-value stat-value-money">${euros(pending)}</div><span class="trend neutral">Valor em processos</span></article>
  </section>
  <section class="dashboard-grid"><article class="card"><div class="card-head"><h3>Processos recentes</h3><button class="text-btn" data-go="processos">Ver todos →</button></div><div class="process-list">${processRows()}</div></article>
  <article class="card"><div class="card-head"><h3>Agenda de hoje</h3><button class="text-btn" data-go="agenda">Abrir agenda →</button></div><div class="agenda-list">${todayBookings.length?todayBookings.slice(0,5).map(b=>`<div class="agenda-item"><span class="time">${b.time}</span><div><b>${b.service}</b><small>${b.client} · ${b.bike}</small></div></div>`).join(''):'<div class="no-results">Sem marcações para hoje.</div>'}
@@ -751,4 +766,4 @@ openProcessEditor=function(process){openProcessEditorColorsBase(process);const f
 window.addEventListener('online',retryServerOutbox);
 setInterval(retryServerOutbox,10000);
 setTimeout(retryServerOutbox,2500);
-window.addEventListener('hashchange',()=>{if(currentUser)route()});restoreSession();updateNotificationBadge();
+window.addEventListener('hashchange',()=>{if(currentUser)route()});initializeInterfaceTheme();restoreSession();updateNotificationBadge();
