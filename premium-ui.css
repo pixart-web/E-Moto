@@ -1,3 +1,11 @@
+@font-face{
+  font-family:"Aldrich";
+  src:url("assets/fonts/aldrich/Aldrich-Regular.ttf") format("truetype");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
+
 /* E-MOTO — MotoGreen Premium Business Interface
    Visual-only layer. It intentionally preserves all existing selectors and behaviour. */
 :root{
@@ -16,11 +24,13 @@
   --shadow-soft:0 2px 10px rgba(24,35,30,.045);
   --radius:9px;
   color-scheme:light;
+  font-family:"Aldrich",system-ui,sans-serif;
 }
 
 html{background:var(--bg);scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-button,input,select,textarea{font-family:"DM Sans",sans-serif}
+body{background:var(--bg);color:var(--ink);font-family:"Aldrich",system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font-family:"Aldrich",system-ui,sans-serif}
+h1,h2,h3,.brand strong,.brand-mark,.btn,.stat-value,.metric b{font-family:"Aldrich",system-ui,sans-serif}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid rgba(8,122,67,.2);outline-offset:2px}
 
 /* Login */
