@@ -58,6 +58,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .nav{gap:3px}
 .nav p{margin:18px 11px 6px;color:#8a978f;font-size:10px;letter-spacing:.13em}
 .nav a{position:relative;height:42px;padding:0 11px;border-radius:7px;color:#536159;font-weight:600}
+.nav a>span:first-child{display:none}
+.nav a{gap:0}
 .nav a::before{content:"";position:absolute;left:-16px;width:3px;height:22px;border-radius:0 4px 4px 0;background:transparent}
 .nav a span{color:#7c8c83}
 .nav a span svg{stroke-width:1.65}
@@ -80,7 +82,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .date-chip small{font-size:11px}.date-chip b{font-size:13px}
 .top-user{gap:9px}.top-user .avatar{border-radius:8px;background:var(--mint);color:var(--green)}
 .top-user-name small{font-size:10px;color:var(--muted)}.top-user-name b{font-size:12px}
-.top-account-btn{min-height:34px;padding:0 10px;border-radius:6px;border:1px solid var(--line);background:#fff;color:#526159;font-size:11px;font-weight:700}
+.top-account-btn{min-height:34px;padding:0 10px;border-radius:6px;border:1px solid var(--line);background:#fff;color:#526159;font-family:"Aldrich",system-ui,sans-serif;font-size:11px;font-weight:700}
 .top-account-btn:hover{border-color:#b8cec0;background:#f7faf8;color:var(--green)}
 .top-account-btn.logout{color:#a44242}
 .view{max-width:1560px;padding:28px 30px 40px}
@@ -133,6 +135,16 @@ h1{font-size:28px;line-height:1.2;letter-spacing:-.035em}
 .process-table tfoot td{background:#f7f9f8;border-top:1px solid var(--line)}
 .table-tools{align-items:center;flex-wrap:wrap}
 .pagination{gap:5px}.pagination button{border-radius:6px}
+
+/* Order list controls */
+.order-status-cell{min-width:220px}
+.order-status{display:block;width:100%;max-width:none;min-height:34px;padding-left:12px;padding-right:30px}
+.order-row-actions{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.order-action-btn{width:32px;height:32px;padding:0;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:7px;background:var(--white);color:#526159;cursor:pointer;transition:background .15s,border-color .15s,color .15s,transform .15s}
+.order-action-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.order-action-btn:hover{background:var(--mint);border-color:#bdd8c7;color:var(--green);transform:translateY(-1px)}
+.order-action-btn.delete{border-color:#efd1d1;color:#b84949;background:#fffafa}
+.order-action-btn.delete:hover{background:#faeaea;border-color:#e6baba;color:#a63333}
 
 /* Process details */
 .detail-grid{gap:18px}
@@ -327,6 +339,9 @@ html[data-theme="dark"] .dashboard-grid .daily-email{background:linear-gradient(
 html[data-theme="dark"] .process-row:hover,html[data-theme="dark"] .process-table tbody tr:hover,html[data-theme="dark"] .office-month-day:hover,html[data-theme="dark"] .calendar-head button:hover{background:#1b2922}
 html[data-theme="dark"] .process-table th,html[data-theme="dark"] .process-table tfoot td,html[data-theme="dark"] .month-weekdays{background:#131d18;color:#91a097;border-color:var(--line)}
 html[data-theme="dark"] .process-table td,html[data-theme="dark"] .process-row,html[data-theme="dark"] .card-head,html[data-theme="dark"] .tabs,html[data-theme="dark"] .metric,html[data-theme="dark"] .admin-user-row{border-color:var(--line)}
+html[data-theme="dark"] .order-action-btn{background:#17231d;border-color:#34463c;color:#b7c7be}
+html[data-theme="dark"] .order-action-btn:hover{background:#21352a;color:#76dba7;border-color:#3d6b53}
+html[data-theme="dark"] .order-action-btn.delete{background:#2b1c1d;border-color:#553033;color:#e88b8b}
 html[data-theme="dark"] .initials,html[data-theme="dark"] .bike-icon{background:#203128;color:#8fdcb2}
 html[data-theme="dark"] .progress,html[data-theme="dark"] .hour-line{background:#26342d;border-color:#26342d}
 html[data-theme="dark"] .form-section input,html[data-theme="dark"] .form-section select,html[data-theme="dark"] .form-section textarea,html[data-theme="dark"] .stock-form-card input,html[data-theme="dark"] .stock-form-card select,html[data-theme="dark"] .stock-form-card textarea,html[data-theme="dark"] .accounting-filter,html[data-theme="dark"] .process-status-filter,html[data-theme="dark"] .admin-permission-grid label{background:#121b17;border-color:#304037;color:#e3eee8}
