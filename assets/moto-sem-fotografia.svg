@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" role="img" aria-labelledby="title description">
+  <title id="title">Moto sem fotografia</title>
+  <desc id="description">Imagem neutra utilizada enquanto uma fotografia da moto não estiver disponível.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#edf7f2"/>
+      <stop offset="1" stop-color="#dceee5"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="560" rx="36" fill="url(#background)"/>
+  <circle cx="650" cy="70" r="180" fill="#ffffff" opacity=".55"/>
+  <circle cx="190" cy="410" r="112" fill="#ffffff" opacity=".28"/>
+  <g fill="none" stroke="#0d6b4b" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="250" cy="352" r="74" stroke-width="24"/>
+    <circle cx="570" cy="352" r="74" stroke-width="24"/>
+    <path d="M250 352h126l74-140h75l45 140M376 352l-70-126h88l56 126h120M306 226l-30-54h-54M452 212l-30-52" stroke-width="25"/>
+    <path d="M476 160h76" stroke-width="22"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="400" y="482" fill="#173a2e" font-size="31" font-weight="700">SEM FOTOGRAFIA</text>
+    <text x="400" y="520" fill="#668076" font-size="20">A imagem deste modelo será adicionada posteriormente</text>
+  </g>
+</svg>

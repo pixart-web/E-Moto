@@ -10,8 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <meta name="emotogreen-version" content="2026.10.19.37">
-  <link rel="stylesheet" href="styles.css?v=20261015-33">
+  <link rel="stylesheet" href="styles.css?v=20261028-56-audit">
   <link rel="stylesheet" href="calendar-notes-v37.css?v=20261019-37">
+  <link rel="stylesheet" href="calendar-notes-week-fix.css?v=20261028-59-audit">
 </head>
 <body>
   <section class="login-screen" id="loginScreen">
@@ -91,7 +92,7 @@
           </div>
           <label class="full" id="usedBikeField" hidden><span>Marca e modelo da moto usada</span><input name="usedBike" placeholder="Ex.: Honda CB750 Hornet"></label>
           <label id="bikeVariantField" hidden><span>Configuração</span><select name="bikeVariant" id="bikeVariant"></select></label>
-          <label><span>Cor</span><input name="color" id="bikeColor" list="colorSuggestions" placeholder="Introduzir cor manualmente"><datalist id="colorSuggestions"></datalist></label>
+          <label><span>Cor</span><select name="color" id="bikeColorSelect" hidden disabled><option value="">Selecionar cor</option></select><input name="colorManual" id="bikeColor" placeholder="Introduzir cor manualmente"></label>
         </div></div>
         <div class="form-section finance-fields" id="financeFields" hidden><h3>Dados do financiamento</h3><p>Indique a modalidade e valide os documentos já recebidos.</p>
           <div class="form-grid"><label class="full"><span>Tipo de financiamento</span><select name="financingType"><option>Financiamento em campanha</option><option>Financiamento com o Flávio</option></select></label></div>
@@ -192,6 +193,6 @@
     </section>
   </div>
   <div id="toast" class="toast" role="status"></div>
-  <script src="app.js?v=20261022-50-audit"></script>
+  <script src="app.js?v=20261028-62-audit"></script>
 </body>
 </html>

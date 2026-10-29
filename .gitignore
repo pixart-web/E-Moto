@@ -4,6 +4,8 @@ backups/
 uploads/
 *.log
 *.zip
+outputs/
+tmp/
 .env
 .env.*
 .DS_Store
