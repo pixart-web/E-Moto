@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
-const app=read('app.js'),state=read('api/state.php'),backup=read('api/backup-lib.php'),admin=read('api/admin-users.php'),cheques=read('api/cheque-notifications.php');
+const app=read('app.js'),state=read('api/state.php'),backup=read('api/backup-lib.php'),admin=read('api/admin-users.php'),cheques=read('api/cheque-notifications.php'),bikeImages=read('api/bike-images.php');
 const android=read('android-app/app/src/main/java/pt/motogreen/emoto/MainActivity.java');
 assert.match(app,/const processOutstanding = process =>[^\r\n]*processTradeInValue\(process\)/,'retoma deve abater à dívida');
 assert.ok(app.includes(": (Number(process?.price)||0);"),'processo legado não deve somar acessórios duas vezes');
@@ -37,7 +37,14 @@ assert.match(read('android-app/app/src/main/res/values-it/strings.xml'),/<resour
 assert.match(app,/function clientBikeImageInfo\(/,'clientes devem resolver imagens através de stock, processo e catálogo');
 assert.match(app,/targetType==='client-bike'/,'biblioteca deve permitir substituir a imagem da moto na ficha do cliente');
 assert.match(app,/data-client-bike-image/,'cartões de motos dos clientes devem abrir a biblioteca de imagens');
+assert.match(app,/function openCatalogModelEditor\(/,'catálogo deve permitir editar os modelos');
+assert.match(app,/function bikeVariantsFor\(/,'cores e variantes personalizadas devem ser reutilizadas pelos módulos');
+assert.match(app,/targetType==='catalog-color'/,'catálogo deve permitir associar uma imagem a cada cor');
+assert.match(app,/function normalizeBikeLibraryUrl\(/,'URLs antigas da biblioteca devem ser normalizadas');
+assert.match(bikeImages,/REQUEST_METHOD'] === 'DELETE'/,'biblioteca deve permitir apagar imagens');
+assert.match(bikeImages,/bike-images\.php\?file=/,'imagens carregadas devem ser servidas por um URL estável');
 assert.doesNotMatch(app,/dashboard-stats[\s\S]{0,1200}stat-icon/,'indicadores da visão geral não devem apresentar ícones');
 assert.match(read('premium-ui.css'),/\.orders-layout\{grid-template-columns:minmax\(0,1fr\)/,'encomendas devem usar uma única coluna');
 for(const asset of ['assets/moto-generica-verde.svg','assets/moto-generica-azul.svg','assets/moto-generica-ambar.svg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
+for(const asset of ['assets/brands/cfmoto.png','assets/brands/cyclone.png','assets/brands/sherco.png','assets/brands/ktm.png'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 console.log('Static regression checks: OK');

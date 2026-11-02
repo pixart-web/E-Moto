@@ -3,16 +3,54 @@ declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
 
+$uploadDirectory = dirname(__DIR__) . '/uploads/bikes';
+if (!is_dir($uploadDirectory) && !mkdir($uploadDirectory, 0755, true) && !is_dir($uploadDirectory)) {
+    throw new RuntimeException('Não foi possível criar a pasta da biblioteca de imagens.');
+}
+
+function bike_image_safe_name(string $name): string
+{
+    $decoded = rawurldecode($name);
+    $extension = strtolower(pathinfo($decoded, PATHINFO_EXTENSION));
+    if ($decoded === '' || basename($decoded) !== $decoded || !preg_match('/^[a-zA-Z0-9._-]+$/', $decoded)
+        || !in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+        json_response(['ok' => false, 'error' => 'Imagem inválida.'], 422);
+    }
+    return $decoded;
+}
+
+function bike_image_url(string $name): string
+{
+    return 'api/bike-images.php?file=' . rawurlencode($name);
+}
+
+// As imagens já eram ficheiros públicos em uploads/bikes. Este proxy mantém essa
+// compatibilidade e evita URLs quebrados por regras do alojamento na pasta uploads.
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['file'])) {
+    $name = bike_image_safe_name((string)$_GET['file']);
+    $path = $uploadDirectory . '/' . $name;
+    if (!is_file($path)) {
+        http_response_code(404);
+        exit;
+    }
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($path) ?: '';
+    if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+        http_response_code(415);
+        exit;
+    }
+    header('Content-Type: ' . $mime);
+    header('Content-Length: ' . (string)(filesize($path) ?: 0));
+    header('Cache-Control: private, max-age=86400');
+    header('X-Content-Type-Options: nosniff');
+    readfile($path);
+    exit;
+}
+
 $user = require_user();
 if (!in_array($user['role'], ['admin', 'boss'], true)
     && !in_array('motos', $user['permissions'], true)
     && !in_array('processos', $user['permissions'], true)) {
     json_response(['ok' => false, 'error' => 'Sem acesso à biblioteca de imagens.'], 403);
-}
-
-$uploadDirectory = dirname(__DIR__) . '/uploads/bikes';
-if (!is_dir($uploadDirectory) && !mkdir($uploadDirectory, 0755, true) && !is_dir($uploadDirectory)) {
-    throw new RuntimeException('Não foi possível criar a pasta da biblioteca de imagens.');
 }
 
 function bike_image_library(string $directory): array
@@ -26,7 +64,7 @@ function bike_image_library(string $directory): array
         if (!is_file($path) || !in_array($extension, $allowed, true)) continue;
         $entries[] = [
             'name' => $name,
-            'url' => 'uploads/bikes/' . rawurlencode($name),
+            'url' => bike_image_url($name),
             'size' => filesize($path) ?: 0,
             'uploadedAt' => date(DATE_ATOM, filemtime($path) ?: time()),
         ];
@@ -36,6 +74,20 @@ function bike_image_library(string $directory): array
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    json_response(['ok' => true, 'images' => bike_image_library($uploadDirectory)]);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    verify_csrf();
+    $input = json_input();
+    $name = bike_image_safe_name((string)($input['name'] ?? ''));
+    $path = $uploadDirectory . '/' . $name;
+    if (!is_file($path)) {
+        json_response(['ok' => false, 'error' => 'A imagem já não existe na biblioteca.'], 404);
+    }
+    if (!unlink($path)) {
+        throw new RuntimeException('Não foi possível apagar a imagem da biblioteca.');
+    }
     json_response(['ok' => true, 'images' => bike_image_library($uploadDirectory)]);
 }
 
@@ -85,7 +137,7 @@ json_response([
     'ok' => true,
     'image' => [
         'name' => $name,
-        'url' => 'uploads/bikes/' . rawurlencode($name),
+        'url' => bike_image_url($name),
         'size' => filesize($destination) ?: $size,
         'uploadedAt' => date(DATE_ATOM),
     ],

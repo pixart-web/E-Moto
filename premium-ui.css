@@ -204,7 +204,23 @@ h1{font-size:28px;line-height:1.2;letter-spacing:-.035em}
 .bike-card-change-photo{background:rgba(13,51,36,.9);font-size:10px}
 .bike-card-badge{border-radius:999px;box-shadow:none}
 .process-bike-thumb{border-radius:8px;border:1px solid var(--line)}
-.bike-library-item{border-radius:8px}.bike-library-item img{background:#f0f5f2}
+.bike-library-item{position:relative;border-radius:8px}.bike-library-item img{background:#f0f5f2}
+.bike-library-select{display:block;width:100%;padding:0;border:0;background:#fff;text-align:left;cursor:pointer}
+.bike-library-delete{position:absolute;top:7px;right:7px;width:30px;height:30px;display:grid;place-items:center;border:1px solid #efc9c9;border-radius:7px;background:rgba(255,255,255,.95);color:var(--red);font-family:inherit;font-size:15px;font-weight:700;line-height:1;cursor:pointer;box-shadow:0 3px 10px rgba(50,20,20,.12)}
+.bike-library-delete:hover{background:#fff0f0;border-color:var(--red)}
+.bike-library-delete:disabled{opacity:.45;cursor:wait}
+.bike-library-delete svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Catalog model editor and brand identities */
+.catalog-brand-logo{width:auto;max-width:150px;height:38px;object-fit:contain;object-position:left center}
+.catalog-brand-head h3:empty{display:none}
+.bike-card-brand-logo{display:block;width:auto;max-width:112px;height:24px;margin-bottom:8px;object-fit:contain;object-position:left center}
+.catalog-model-editor{max-width:720px}
+.catalog-config-list{min-height:42px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:9px;border:1px solid var(--line);border-radius:8px;background:#f8faf9}
+.catalog-config-list>small{color:var(--muted)}
+.catalog-config-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid #dce8e1;border-radius:999px;background:#fff;color:var(--ink);font-size:10px;font-weight:700}
+.catalog-config-chip button{width:23px;height:23px;display:grid;place-items:center;padding:0;border:0;border-radius:999px;background:var(--mint);color:var(--green);cursor:pointer}
+.catalog-config-chip button:hover{background:var(--green);color:#fff}
 
 /* Client motorcycle imagery */
 .client-bike-avatar{position:relative;width:50px;height:42px;flex:0 0 50px;display:block;overflow:visible}
@@ -398,6 +414,9 @@ html[data-theme="dark"] .subtext,html[data-theme="dark"] .cell-sub,html[data-the
 html[data-theme="dark"] .bike-card-media,html[data-theme="dark"] .stock-bike-image,html[data-theme="dark"] .catalog-bike-image{background:#111b16}
 html[data-theme="dark"] .client-bike-avatar img,html[data-theme="dark"] .client-bike-photo{background:#111b16;border-color:var(--line)}
 html[data-theme="dark"] .client-bike-card.visual{background:var(--white);border-color:var(--line)}
+html[data-theme="dark"] .bike-library-select,html[data-theme="dark"] .catalog-config-chip{background:#17211d;color:var(--ink)}
+html[data-theme="dark"] .catalog-config-list{background:#111a16;border-color:var(--line)}
+html[data-theme="dark"] .bike-library-delete{background:#2b1c1d;border-color:#553033;color:#e88b8b}
 html[data-theme="dark"] .calendar-event,html[data-theme="dark"] .month-booking{background:#1b3e2d;color:#91dfb5;border-left-color:#3fc280}
 html[data-theme="dark"] .calendar-event.event-past,html[data-theme="dark"] .month-booking.event-past{background:#452627;color:#f0aaaa;border-left-color:#df6666}
 html[data-theme="dark"] .accounting-filter button.active,html[data-theme="dark"] .process-status-filter button.active{background:#214331;color:#83dcae}
