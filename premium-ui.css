@@ -431,10 +431,10 @@ html[data-theme="dark"] .subtext,html[data-theme="dark"] .cell-sub,html[data-the
 html[data-theme="dark"] .bike-card-media,html[data-theme="dark"] .bike-card-image,html[data-theme="dark"] .stock-bike-image,html[data-theme="dark"] .catalog-bike-image{background:#111b16}
 html[data-theme="dark"] .client-bike-avatar img,html[data-theme="dark"] .client-bike-photo{background:#111b16;border-color:var(--line)}
 html[data-theme="dark"] .client-bike-card.visual{background:var(--white);border-color:var(--line)}
-html[data-theme="dark"] .stock-select,html[data-theme="dark"] .status-select,html[data-theme="dark"] .bike-card-field select{appearance:auto;background:#101a15!important;border:1px solid #34483d!important;color:#edf5f0!important;color-scheme:dark;box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)}
-html[data-theme="dark"] .stock-select:hover,html[data-theme="dark"] .status-select:hover,html[data-theme="dark"] .bike-card-field select:hover{background:#16231d!important;border-color:#476052!important}
-html[data-theme="dark"] .stock-select:focus,html[data-theme="dark"] .status-select:focus,html[data-theme="dark"] .bike-card-field select:focus{outline:0;border-color:#3da06b!important;box-shadow:0 0 0 3px rgba(57,185,120,.14)}
-html[data-theme="dark"] .stock-select option,html[data-theme="dark"] .status-select option,html[data-theme="dark"] .bike-card-field select option{background:#101a15!important;color:#edf5f0!important}
+html[data-theme="dark"] .stock-select,html[data-theme="dark"] .status-select,html[data-theme="dark"] .order-status,html[data-theme="dark"] .bike-card-field select{appearance:auto;background:#101a15!important;border:1px solid #34483d!important;color:#edf5f0!important;color-scheme:dark;box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)}
+html[data-theme="dark"] .stock-select:hover,html[data-theme="dark"] .status-select:hover,html[data-theme="dark"] .order-status:hover,html[data-theme="dark"] .bike-card-field select:hover{background:#16231d!important;border-color:#476052!important}
+html[data-theme="dark"] .stock-select:focus,html[data-theme="dark"] .status-select:focus,html[data-theme="dark"] .order-status:focus,html[data-theme="dark"] .bike-card-field select:focus{outline:0;border-color:#3da06b!important;box-shadow:0 0 0 3px rgba(57,185,120,.14)}
+html[data-theme="dark"] .stock-select option,html[data-theme="dark"] .status-select option,html[data-theme="dark"] .order-status option,html[data-theme="dark"] .bike-card-field select option{background:#101a15!important;color:#edf5f0!important}
 html[data-theme="dark"] .active-action{background:#172a20;border-color:#315b45}
 html[data-theme="dark"] .bike-library-select,html[data-theme="dark"] .catalog-config-chip{background:#17211d;color:var(--ink)}
 html[data-theme="dark"] .catalog-config-list{background:#111a16;border-color:var(--line)}
