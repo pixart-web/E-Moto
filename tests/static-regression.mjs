@@ -61,6 +61,9 @@ assert.match(premium,/html\[data-theme="dark"\] \.testdrive-day[^\{]*\{backgroun
 assert.match(premium,/html\[data-theme="dark"\] \.testdrive-day\.outside[^\{]*html\[data-theme="dark"\] \.absence-day\.outside[^\{]*\{background:#111a16/,'dias exteriores dos calendários devem respeitar o tema escuro');
 assert.match(premium,/html\[data-theme="dark"\] \.document-checks label[^\{]*\{background:#121b17/,'documentos de financiamento devem respeitar o tema escuro');
 assert.match(premium,/html\[data-theme="dark"\] \.process-view-switch[^\{]*\{background:#121b17/,'seletor de processos deve respeitar o tema escuro');
+assert.match(premium,/html\[data-theme="dark"\] \.stock-select[^\{]*html\[data-theme="dark"\] \.status-select[^\{]*\{appearance:auto;background:#101a15!important/,'menus do stock devem ter fundo e texto próprios no tema escuro');
+assert.match(premium,/html\[data-theme="dark"\] \.stock-select option[^\{]*\{background:#101a15!important;color:#edf5f0!important/,'opções dos menus do stock devem ser legíveis no tema escuro');
+assert.match(premium,/html\[data-theme="dark"\] \.bike-card-media[^\{]*\.bike-card-image/,'zona visual dos cartões deve respeitar o tema escuro');
 for(const asset of ['assets/moto-generica-verde.svg','assets/moto-generica-azul.svg','assets/moto-generica-ambar.svg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 for(const asset of ['assets/brands/cfmoto.png','assets/brands/cyclone.png','assets/brands/sherco.png','assets/brands/ktm.png'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 for(const asset of ['assets/bikes/sherco/125-4t-sm-blackmoon-rs.jpg','assets/bikes/sherco/300se-2t-factory.jpg','assets/bikes/sherco/50-sm-rs-pink.jpg','assets/bikes/sherco/factory-50-blackmoon.jpg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
