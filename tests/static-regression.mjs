@@ -50,6 +50,13 @@ assert.match(read('index.html'),/id="currentClock"/,'barra superior deve apresen
 assert.match(read('index.html'),/id="topWeather"/,'barra superior deve apresentar a meteorologia');
 assert.match(app,/api\.open-meteo\.com\/v1\/forecast/,'meteorologia deve usar a previsão atual de Messines');
 assert.match(app,/setInterval\(updateTopbarClock,1000\)/,'relógio deve ser atualizado em tempo real');
+const premium=read('premium-ui.css');
+assert.match(premium,/\.document-checks input\[type="checkbox"\][\s\S]{0,650}width:17px!important/,'piscos documentais devem manter dimensões compactas');
+assert.match(premium,/\.dashboard-grid \.daily-email b\{[^}]*"Oswald"/,'resumo automático deve usar Oswald');
+assert.match(premium,/html\[data-theme="dark"\] \.testdrive-day[^\{]*\{background:#17211d/,'agenda mensal deve respeitar o tema escuro');
+assert.match(premium,/html\[data-theme="dark"\] \.testdrive-day\.outside[^\{]*html\[data-theme="dark"\] \.absence-day\.outside[^\{]*\{background:#111a16/,'dias exteriores dos calendários devem respeitar o tema escuro');
+assert.match(premium,/html\[data-theme="dark"\] \.document-checks label[^\{]*\{background:#121b17/,'documentos de financiamento devem respeitar o tema escuro');
+assert.match(premium,/html\[data-theme="dark"\] \.process-view-switch[^\{]*\{background:#121b17/,'seletor de processos deve respeitar o tema escuro');
 for(const asset of ['assets/moto-generica-verde.svg','assets/moto-generica-azul.svg','assets/moto-generica-ambar.svg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 for(const asset of ['assets/brands/cfmoto.png','assets/brands/cyclone.png','assets/brands/sherco.png','assets/brands/ktm.png'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 console.log('Static regression checks: OK');
