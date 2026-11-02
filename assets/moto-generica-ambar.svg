@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Imagem genérica de moto</title>
+  <desc id="desc">Ilustração neutra âmbar usada quando não existe fotografia específica da moto.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#faf2e4"/><stop offset="1" stop-color="#efdec3"/></linearGradient></defs>
+  <rect width="800" height="520" rx="34" fill="url(#bg)"/>
+  <circle cx="675" cy="65" r="170" fill="#fff" opacity=".5"/>
+  <path d="M0 420C150 350 280 470 440 405c150-60 245-25 360 25v90H0Z" fill="#a66a18" opacity=".09"/>
+  <g fill="none" stroke="#a66a18" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="235" cy="350" r="78" stroke-width="25"/><circle cx="580" cy="350" r="78" stroke-width="25"/>
+    <path d="M235 350h130l82-150h76l57 150M365 350l-78-132h100l60 132h133M287 218l-36-58h-58M448 200l-38-54M472 146h92" stroke-width="27"/>
+  </g>
+  <rect x="320" y="93" width="160" height="38" rx="19" fill="#fff" opacity=".8"/>
+  <text x="400" y="119" text-anchor="middle" fill="#a66a18" font-family="Arial,sans-serif" font-size="18" font-weight="700">MOTO</text>
+</svg>

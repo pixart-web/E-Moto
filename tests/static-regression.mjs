@@ -34,4 +34,10 @@ assert.match(app,/currentUser\?\.role!=='employee'\)return false/,'roles desconh
 assert.doesNotMatch(read('private/config.example.php'),/Motogreen\.\d+|OuOnjUs/,'exemplo não pode conter passwords reais');
 assert.match(android,/e-moto\.motogreen\.pt/,'Android deve continuar ligado ao domínio E-Moto');
 assert.match(read('android-app/app/src/main/res/values-it/strings.xml'),/<resources>/,'recursos italianos devem existir');
+assert.match(app,/function clientBikeImageInfo\(/,'clientes devem resolver imagens através de stock, processo e catálogo');
+assert.match(app,/targetType==='client-bike'/,'biblioteca deve permitir substituir a imagem da moto na ficha do cliente');
+assert.match(app,/data-client-bike-image/,'cartões de motos dos clientes devem abrir a biblioteca de imagens');
+assert.doesNotMatch(app,/dashboard-stats[\s\S]{0,1200}stat-icon/,'indicadores da visão geral não devem apresentar ícones');
+assert.match(read('premium-ui.css'),/\.orders-layout\{grid-template-columns:minmax\(0,1fr\)/,'encomendas devem usar uma única coluna');
+for(const asset of ['assets/moto-generica-verde.svg','assets/moto-generica-azul.svg','assets/moto-generica-ambar.svg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 console.log('Static regression checks: OK');

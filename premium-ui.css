@@ -90,6 +90,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* Typography and page headers */
 h1,h2,h3{color:var(--ink)}
 h1{font-size:28px;line-height:1.2;letter-spacing:-.035em}
+.page-head h1,.card-head h3,.modal h2,.form-section h3,.side-section h3,.dashboard-hero h1,.bike-card-content h4{text-transform:uppercase;letter-spacing:.025em}
 .page-head{align-items:center;margin-bottom:24px;gap:20px}
 .eyebrow{font-size:10px;color:var(--green);letter-spacing:.13em}
 .subtext{font-size:13px;line-height:1.5}
@@ -149,6 +150,10 @@ h1{font-size:28px;line-height:1.2;letter-spacing:-.035em}
 .order-form-card #orderForm>.form-grid>label{grid-column:1/-1}
 .order-form-card #orderForm textarea{min-height:110px}
 .order-form-card #orderForm>.btn{width:100%;justify-content:center}
+.orders-layout{grid-template-columns:minmax(0,1fr);gap:18px}
+.order-form-card{width:100%;max-width:none}
+.order-form-card #orderForm{width:min(100%,720px);padding-bottom:20px}
+.orders-layout>.card:last-child{min-width:0}
 .crud-icon-button{width:32px!important;min-width:32px;height:32px!important;min-height:32px!important;padding:0!important;display:inline-grid!important;place-items:center;border-radius:7px!important;vertical-align:middle}
 .crud-icon-button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .crud-icon-delete{border-color:#efd1d1!important;color:#b84949!important;background:#fffafa!important}
@@ -200,6 +205,22 @@ h1{font-size:28px;line-height:1.2;letter-spacing:-.035em}
 .bike-card-badge{border-radius:999px;box-shadow:none}
 .process-bike-thumb{border-radius:8px;border:1px solid var(--line)}
 .bike-library-item{border-radius:8px}.bike-library-item img{background:#f0f5f2}
+
+/* Client motorcycle imagery */
+.client-bike-avatar{position:relative;width:50px;height:42px;flex:0 0 50px;display:block;overflow:visible}
+.client-bike-avatar img{position:absolute;inset:0;width:50px;height:42px;border:1px solid var(--line);border-radius:8px;background:#edf5f1;object-fit:cover;box-shadow:0 2px 7px rgba(24,35,30,.07)}
+.client-bike-avatar.multiple img:first-child{width:42px;height:38px;top:2px;z-index:2}
+.client-bike-avatar.multiple img:nth-child(2){width:42px;height:38px;left:9px;top:-2px;z-index:1;filter:saturate(.9)}
+.client-bike-avatar i{position:absolute;right:-5px;bottom:-5px;z-index:3;min-width:20px;height:20px;padding:0 4px;display:grid;place-items:center;border:2px solid var(--white);border-radius:999px;background:var(--green);color:#fff;font-size:8px;font-style:normal;font-weight:800}
+.client-bike-card.visual{display:grid;grid-template-columns:116px minmax(0,1fr);gap:12px;align-items:stretch;overflow:hidden;padding:0;background:var(--white)}
+.client-bike-photo{position:relative;width:116px;min-height:92px;padding:0;overflow:hidden;border:0;border-right:1px solid var(--line);background:#eef5f1;cursor:pointer}
+.client-bike-photo img{display:block;width:100%;height:100%;min-height:92px;object-fit:cover;transition:transform .18s}
+.client-bike-photo>span{position:absolute;left:50%;bottom:7px;translate:-50% 6px;padding:5px 7px;border-radius:999px;background:rgba(8,49,37,.88);color:#fff;font-size:8px;font-weight:800;opacity:0;white-space:nowrap;transition:.18s}
+.client-bike-photo:hover img,.client-bike-photo:focus-visible img{transform:scale(1.05)}
+.client-bike-photo:hover>span,.client-bike-photo:focus-visible>span{translate:-50% 0;opacity:1}
+.client-bike-card-copy{min-width:0;padding:12px 12px 11px 0;align-self:center}
+.client-bike-card-copy b,.client-bike-card-copy small{overflow:hidden;text-overflow:ellipsis}
+.client-bike-card-copy .text-btn{display:block;margin-top:7px;padding:0;text-align:left;font-size:10px}
 
 /* Calendar and schedules */
 .calendar-card{border-radius:9px}
@@ -297,6 +318,7 @@ html[data-theme="dark"] .theme-icon-light{display:grid}
 .dashboard-stats .stat-card{position:relative;min-width:0;min-height:122px;padding:19px 18px 17px;border:0;border-right:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none}
 .dashboard-stats .stat-card:last-child{border-right:0}
 .dashboard-stats .stat-top{gap:8px;color:#65726b;font-size:11px;font-weight:700}
+.dashboard-stats .stat-top>span:first-child{text-transform:uppercase;letter-spacing:.055em}
 .dashboard-stats .stat-icon{order:-1;width:30px;height:30px;margin-right:2px;border-radius:8px;font-size:12px;background:#eaf6ef;color:#087a43}
 .dashboard-stats .stat-card:nth-child(2) .stat-icon{background:#e9f3ff;color:#2875bd}
 .dashboard-stats .stat-card:nth-child(3) .stat-icon{background:#e9f8f5;color:#087d73}
@@ -374,6 +396,8 @@ html[data-theme="dark"] .hero-secondary{background:rgba(5,15,11,.55);color:#fff}
 html[data-theme="dark"] .text-btn,html[data-theme="dark"] .eyebrow{color:#65d39b}
 html[data-theme="dark"] .subtext,html[data-theme="dark"] .cell-sub,html[data-theme="dark"] .trend.neutral{color:var(--muted)}
 html[data-theme="dark"] .bike-card-media,html[data-theme="dark"] .stock-bike-image,html[data-theme="dark"] .catalog-bike-image{background:#111b16}
+html[data-theme="dark"] .client-bike-avatar img,html[data-theme="dark"] .client-bike-photo{background:#111b16;border-color:var(--line)}
+html[data-theme="dark"] .client-bike-card.visual{background:var(--white);border-color:var(--line)}
 html[data-theme="dark"] .calendar-event,html[data-theme="dark"] .month-booking{background:#1b3e2d;color:#91dfb5;border-left-color:#3fc280}
 html[data-theme="dark"] .calendar-event.event-past,html[data-theme="dark"] .month-booking.event-past{background:#452627;color:#f0aaaa;border-left-color:#df6666}
 html[data-theme="dark"] .accounting-filter button.active,html[data-theme="dark"] .process-status-filter button.active{background:#214331;color:#83dcae}
@@ -404,6 +428,7 @@ html[data-theme="dark"] .login-card input{background:#111a16;border-color:#30403
   .dashboard-stats .stat-card{border-right:1px solid var(--line)!important;border-bottom:1px solid var(--line)}
   .dashboard-stats .stat-card:nth-child(even){border-right:0!important}
   .dashboard-stats .stat-card:nth-last-child(-n+2){border-bottom:0}
+  .order-form-card #orderForm{width:100%}
 }
 @media(max-width:430px){
   .top-actions{margin-left:auto}
@@ -412,4 +437,6 @@ html[data-theme="dark"] .login-card input{background:#111a16;border-color:#30403
   .dashboard-stats .stat-card{min-height:108px;padding:14px 13px}
   .dashboard-stats .stat-value{font-size:22px}
   .dashboard-stats .stat-value-money{font-size:16px}
+  .client-bike-card.visual{grid-template-columns:92px minmax(0,1fr)}
+  .client-bike-photo{width:92px}
 }
