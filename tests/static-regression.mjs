@@ -50,6 +50,10 @@ assert.match(read('index.html'),/id="currentClock"/,'barra superior deve apresen
 assert.match(read('index.html'),/id="topWeather"/,'barra superior deve apresentar a meteorologia');
 assert.match(app,/api\.open-meteo\.com\/v1\/forecast/,'meteorologia deve usar a previsão atual de Messines');
 assert.match(app,/setInterval\(updateTopbarClock,1000\)/,'relógio deve ser atualizado em tempo real');
+assert.match(app,/Sherco:\{[\s\S]{0,250}'125 4T SM BlackMoon RS':[\s\S]{0,250}'FACTORY 50 Blackmoon':\[\]/,'catálogo base deve incluir os modelos Sherco recebidos');
+assert.match(app,/sherco:\{[\s\S]{0,500}'300se2tfactory':\{default:'assets\/bikes\/sherco\/300se-2t-factory\.jpg'/,'imagens Sherco devem estar associadas pelos nomes dos modelos');
+assert.match(app,/function ensureShercoCatalogPreset\(\)/,'modelos Sherco devem ser acrescentados uma única vez ao catálogo existente');
+assert.match(app,/modelImages\.default\|\|''/,'imagem geral do modelo deve continuar visível com uma cor preenchida');
 const premium=read('premium-ui.css');
 assert.match(premium,/\.document-checks input\[type="checkbox"\][\s\S]{0,650}width:17px!important/,'piscos documentais devem manter dimensões compactas');
 assert.match(premium,/\.dashboard-grid \.daily-email b\{[^}]*"Oswald"/,'resumo automático deve usar Oswald');
@@ -59,4 +63,5 @@ assert.match(premium,/html\[data-theme="dark"\] \.document-checks label[^\{]*\{b
 assert.match(premium,/html\[data-theme="dark"\] \.process-view-switch[^\{]*\{background:#121b17/,'seletor de processos deve respeitar o tema escuro');
 for(const asset of ['assets/moto-generica-verde.svg','assets/moto-generica-azul.svg','assets/moto-generica-ambar.svg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 for(const asset of ['assets/brands/cfmoto.png','assets/brands/cyclone.png','assets/brands/sherco.png','assets/brands/ktm.png'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
+for(const asset of ['assets/bikes/sherco/125-4t-sm-blackmoon-rs.jpg','assets/bikes/sherco/300se-2t-factory.jpg','assets/bikes/sherco/50-sm-rs-pink.jpg','assets/bikes/sherco/factory-50-blackmoon.jpg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 console.log('Static regression checks: OK');
