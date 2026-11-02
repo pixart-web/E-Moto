@@ -1,8 +1,8 @@
 @font-face{
-  font-family:"Aldrich";
-  src:url("assets/fonts/aldrich/Aldrich-Regular.ttf") format("truetype");
+  font-family:"Oswald";
+  src:url("assets/fonts/oswald/Oswald-VariableFont_wght.ttf") format("truetype");
   font-style:normal;
-  font-weight:400;
+  font-weight:200 700;
   font-display:swap;
 }
 
@@ -24,13 +24,13 @@
   --shadow-soft:0 2px 10px rgba(24,35,30,.045);
   --radius:9px;
   color-scheme:light;
-  font-family:"Aldrich",system-ui,sans-serif;
+  font-family:"Oswald",system-ui,sans-serif;
 }
 
 html{background:var(--bg);scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:"Aldrich",system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-button,input,select,textarea,option,optgroup{font-family:"Aldrich",system-ui,sans-serif!important}
-h1,h2,h3,.brand strong,.brand-mark,.btn,.stat-value,.metric b{font-family:"Aldrich",system-ui,sans-serif}
+body{background:var(--bg);color:var(--ink);font-family:"Oswald",system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea,option,optgroup{font-family:"Oswald",system-ui,sans-serif!important}
+h1,h2,h3,.brand strong,.brand-mark,.btn,.stat-value,.metric b{font-family:"Oswald",system-ui,sans-serif}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid rgba(8,122,67,.2);outline-offset:2px}
 
 /* Login */
@@ -82,7 +82,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .date-chip small{font-size:11px}.date-chip b{font-size:13px}
 .top-user{gap:9px}.top-user .avatar{border-radius:8px;background:var(--mint);color:var(--green)}
 .top-user-name small{font-size:10px;color:var(--muted)}.top-user-name b{font-size:12px}
-.top-account-btn{min-height:34px;padding:0 10px;border-radius:6px;border:1px solid var(--line);background:#fff;color:#526159;font-family:"Aldrich",system-ui,sans-serif;font-size:11px;font-weight:700}
+.top-account-btn{min-height:34px;padding:0 10px;border-radius:6px;border:1px solid var(--line);background:#fff;color:#526159;font-family:"Oswald",system-ui,sans-serif;font-size:11px;font-weight:700}
 .top-account-btn:hover{border-color:#b8cec0;background:#f7faf8;color:var(--green)}
 .top-account-btn.logout{color:#a44242}
 .view{max-width:1560px;padding:28px 30px 40px}
@@ -145,6 +145,10 @@ h1{font-size:28px;line-height:1.2;letter-spacing:-.035em}
 .order-action-btn:hover{background:var(--mint);border-color:#bdd8c7;color:var(--green);transform:translateY(-1px)}
 .order-action-btn.delete{border-color:#efd1d1;color:#b84949;background:#fffafa}
 .order-action-btn.delete:hover{background:#faeaea;border-color:#e6baba;color:#a63333}
+.order-form-card #orderForm>.form-grid{grid-template-columns:1fr}
+.order-form-card #orderForm>.form-grid>label{grid-column:1/-1}
+.order-form-card #orderForm textarea{min-height:110px}
+.order-form-card #orderForm>.btn{width:100%;justify-content:center}
 .crud-icon-button{width:32px!important;min-width:32px;height:32px!important;min-height:32px!important;padding:0!important;display:inline-grid!important;place-items:center;border-radius:7px!important;vertical-align:middle}
 .crud-icon-button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .crud-icon-delete{border-color:#efd1d1!important;color:#b84949!important;background:#fffafa!important}
@@ -280,9 +284,8 @@ html[data-theme="dark"] .theme-icon-light{display:grid}
 .dashboard-hero{position:relative;isolation:isolate;min-height:205px;margin-bottom:0;padding:34px 38px;display:flex;align-items:center;justify-content:space-between;gap:30px;overflow:hidden;border:1px solid rgba(8,122,67,.18);border-radius:11px 11px 0 0;background:#0a2a20 url("assets/motogreen-hero-banner.png") center right/cover no-repeat;color:#fff;box-shadow:var(--shadow-soft)}
 .dashboard-hero::before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(5,31,23,.97) 0%,rgba(5,31,23,.91) 30%,rgba(5,31,23,.42) 61%,rgba(5,31,23,.08) 100%)}
 .dashboard-hero-copy{max-width:580px}
-.dashboard-kicker{display:block;margin-bottom:9px;color:#b9e5cd;font-size:10px;font-weight:800;letter-spacing:.16em}
 .dashboard-hero h1{margin:0;color:#fff;font-size:36px;line-height:1.12;letter-spacing:-.045em;text-shadow:0 1px 18px rgba(0,0,0,.15)}
-.dashboard-hero p{margin:8px 0 0;color:rgba(255,255,255,.8);font-size:15px}
+.dashboard-hero p{max-width:620px;margin:12px 0 0;color:rgba(255,255,255,.84);font-size:16px;line-height:1.45}
 .dashboard-hero-actions{align-self:flex-end;display:flex;gap:9px;position:relative;z-index:1}
 .dashboard-hero .btn{border-color:rgba(255,255,255,.26);box-shadow:0 8px 24px rgba(0,0,0,.15)}
 .hero-primary{background:#fff;color:#075f35;border-color:#fff!important;font-weight:800}
