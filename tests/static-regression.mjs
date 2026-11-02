@@ -45,6 +45,11 @@ assert.match(bikeImages,/REQUEST_METHOD'] === 'DELETE'/,'biblioteca deve permiti
 assert.match(bikeImages,/bike-images\.php\?file=/,'imagens carregadas devem ser servidas por um URL estável');
 assert.doesNotMatch(app,/dashboard-stats[\s\S]{0,1200}stat-icon/,'indicadores da visão geral não devem apresentar ícones');
 assert.match(read('premium-ui.css'),/\.orders-layout\{grid-template-columns:minmax\(0,1fr\)/,'encomendas devem usar uma única coluna');
+assert.match(read('premium-ui.css'),/orderForm>\.form-grid\{grid-template-columns:repeat\(3/,'formulário de encomendas deve aproveitar colunas no desktop');
+assert.match(read('index.html'),/id="currentClock"/,'barra superior deve apresentar um relógio');
+assert.match(read('index.html'),/id="topWeather"/,'barra superior deve apresentar a meteorologia');
+assert.match(app,/api\.open-meteo\.com\/v1\/forecast/,'meteorologia deve usar a previsão atual de Messines');
+assert.match(app,/setInterval\(updateTopbarClock,1000\)/,'relógio deve ser atualizado em tempo real');
 for(const asset of ['assets/moto-generica-verde.svg','assets/moto-generica-azul.svg','assets/moto-generica-ambar.svg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 for(const asset of ['assets/brands/cfmoto.png','assets/brands/cyclone.png','assets/brands/sherco.png','assets/brands/ktm.png'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 console.log('Static regression checks: OK');
