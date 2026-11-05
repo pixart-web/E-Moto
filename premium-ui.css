@@ -158,6 +158,9 @@ h1{font-size:28px;line-height:1.2;letter-spacing:-.035em}
 .order-form-card #orderForm textarea{min-height:110px}
 .order-form-card #orderForm>.btn{width:min(100%,240px);justify-content:center}
 .orders-layout{grid-template-columns:minmax(0,1fr);gap:18px}
+.order-month-control{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 5px 0 12px;border:1px solid var(--line);border-radius:7px;background:var(--white);color:#6c7a72;font-size:10px;font-weight:700;white-space:nowrap}
+.order-month-control select{min-width:172px;height:32px;padding:0 28px 0 9px;border:0;border-left:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:12px;outline:0}
+.order-empty-row td{padding:0!important}
 .order-form-card{width:100%;max-width:none}
 .order-form-card #orderForm{width:100%;padding-bottom:20px}
 .orders-layout>.card:last-child{min-width:0}
@@ -410,6 +413,8 @@ html[data-theme="dark"] .process-table td,html[data-theme="dark"] .process-row,h
 html[data-theme="dark"] .order-action-btn{background:#17231d;border-color:#34463c;color:#b7c7be}
 html[data-theme="dark"] .order-action-btn:hover{background:#21352a;color:#76dba7;border-color:#3d6b53}
 html[data-theme="dark"] .order-action-btn.delete{background:#2b1c1d;border-color:#553033;color:#e88b8b}
+html[data-theme="dark"] .order-month-control{background:#17231d;border-color:#34463c;color:#91a198}
+html[data-theme="dark"] .order-month-control select{border-color:#34463c;color:#edf5f0;color-scheme:dark}
 html[data-theme="dark"] .crud-icon-delete{background:#2b1c1d!important;border-color:#553033!important;color:#e88b8b!important}
 html[data-theme="dark"] .avatar.has-user-image{background:#20352a;border-color:#355342}
 html[data-theme="dark"] .initials,html[data-theme="dark"] .bike-icon{background:#203128;color:#8fdcb2}

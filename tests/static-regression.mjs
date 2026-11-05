@@ -75,6 +75,10 @@ assert.match(premium,/html\[data-theme="dark"\] \.process-view-switch[^\{]*\{bac
 assert.match(premium,/html\[data-theme="dark"\] \.stock-select[^\{]*html\[data-theme="dark"\] \.status-select[^\{]*\{appearance:auto;background:#101a15!important/,'menus do stock devem ter fundo e texto próprios no tema escuro');
 assert.match(premium,/html\[data-theme="dark"\] \.stock-select option[^\{]*\{background:#101a15!important;color:#edf5f0!important/,'opções dos menus do stock devem ser legíveis no tema escuro');
 assert.match(premium,/html\[data-theme="dark"\] \.order-status[^\{]*html\[data-theme="dark"\] \.bike-card-field select/,'menu de estado das encomendas deve respeitar o tema escuro');
+assert.match(app,/function orderMonthKey\(order\)/,'encomendas devem obter o mês a partir da data registada');
+assert.match(app,/function ordersInSelectedMonth\(\)/,'encomendas devem poder ser filtradas pelo mês selecionado');
+assert.match(app,/Filtrar por mês/,'painel de encomendas deve apresentar filtro mensal');
+assert.match(app,/exportOrdersPdf\(visibleOrders\)/,'PDF de encomendas deve respeitar o período visível');
 assert.match(premium,/html\[data-theme="dark"\] \.bike-card-media[^\{]*\.bike-card-image/,'zona visual dos cartões deve respeitar o tema escuro');
 for(const asset of ['assets/moto-generica-verde.svg','assets/moto-generica-azul.svg','assets/moto-generica-ambar.svg'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
 for(const asset of ['assets/brands/cfmoto.png','assets/brands/cyclone.png','assets/brands/sherco.png','assets/brands/ktm.png'])assert.ok(fs.existsSync(new URL(`../${asset}`,import.meta.url)),`${asset} deve existir`);
